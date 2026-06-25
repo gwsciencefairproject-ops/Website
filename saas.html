@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Subscription Tracker</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#eef4ff;
+}
+
+
+header{
+    background:#2563eb;
+    color:white;
+    padding:20px;
+    text-align:center;
+}
+
+
+nav{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    background:white;
+    padding:10px;
+}
+
+
+nav button{
+    padding:12px 18px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    background:#e5e7eb;
+}
+
+
+nav button:hover{
+    background:#2563eb;
+    color:white;
+}
+
+
+.tab{
+    display:none;
+    max-width:800px;
+    margin:auto;
+    padding:20px;
+}
+
+
+.active{
+    display:block;
+}
+
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    margin-top:20px;
+    box-shadow:0 5px 15px #ccc;
+}
+
+
+input, textarea{
+
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border-radius:8px;
+    border:1px solid #aaa;
+
+}
+
+
+textarea{
+    height:200px;
+}
+
+
+.action{
+
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:8px;
+    cursor:pointer;
+
+}
+
+
+.subscription{
+
+    display:flex;
+    justify-content:space-between;
+    background:#f3f4f6;
+    padding:15px;
+    border-radius:10px;
+    margin:10px 0;
+
+}
+
+
+.delete{
+
+    background:red;
+    color:white;
+    border:none;
+    padding:8px;
+    border-radius:6px;
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<h1>Subscription Tracker</h1>
+
+</header>
+
+
+<nav>
+
+<button onclick="openTab('home')">
+Dashboard
+</button>
+
+<button onclick="openTab('add')">
+Add Subscription
+</button>
+
+<button onclick="openTab('manage')">
+Manage
+</button>
+
+<button onclick="openTab('notes')">
+Notes
+</button>
+
+
+</nav>
+
+
+
+
+<div id="home" class="tab active">
+
+
+<div class="card">
+
+<h2>Dashboard</h2>
+
+<h3>
+Monthly Cost:
+$<span id="total">0</span>
+</h3>
+
+
+<p>
+Track all your subscriptions in one place.
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<div id="add" class="tab">
+
+
+<div class="card">
+
+
+<h2>Add Subscription</h2>
+
+
+<input id="name"
+placeholder="Subscription name">
+
+
+<input id="price"
+type="number"
+placeholder="Monthly price">
+
+
+<input id="date"
+type="date">
+
+
+<button class="action"
+onclick="addSubscription()">
+
+Add Subscription
+
+</button>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div id="manage" class="tab">
+
+
+<div class="card">
+
+
+<h2>Manage Subscriptions</h2>
+
+
+<div id="list"></div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div id="notes" class="tab">
+
+
+<div class="card">
+
+
+<h2>Notes</h2>
+
+
+<textarea id="notesBox"
+placeholder="Write notes here..."></textarea>
+
+
+<button class="action"
+onclick="saveNotes()">
+
+Save Notes
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<script>
+
+
+let subscriptions =
+JSON.parse(localStorage.getItem("subscriptions"))
+|| [];
+
+
+document.getElementById("notesBox").value =
+localStorage.getItem("notes") || "";
+
+
+
+function openTab(tab){
+
+    document.querySelectorAll(".tab")
+    .forEach(x=>x.classList.remove("active"));
+
+
+    document.getElementById(tab)
+    .classList.add("active");
+
+}
+
+
+
+
+
+function addSubscription(){
+
+
+let name =
+document.getElementById("name").value;
+
+
+let price =
+Number(document.getElementById("price").value);
+
+
+let date =
+document.getElementById("date").value;
+
+
+
+subscriptions.push({
+
+name:name,
+price:price,
+date:date
+
+});
+
+
+save();
+
+display();
+
+
+alert("Subscription added!");
+
+}
+
+
+
+
+
+function display(){
+
+
+let list =
+document.getElementById("list");
+
+
+list.innerHTML="";
+
+
+let total=0;
+
+
+
+subscriptions.forEach((s,i)=>{
+
+
+total+=s.price;
+
+
+
+list.innerHTML += `
+
+<div class="subscription">
+
+<div>
+
+<b>${s.name}</b>
+<br>
+
+$${s.price}/month
+
+<br>
+
+Renewal: ${s.date}
+
+</div>
+
+
+<button class="delete"
+onclick="removeSub(${i})">
+
+Delete
+
+</button>
+
+
+</div>
+
+`;
+
+});
+
+
+document.getElementById("total")
+.innerText =
+total.toFixed(2);
+
+
+}
+
+
+
+
+
+function removeSub(i){
+
+subscriptions.splice(i,1);
+
+save();
+
+display();
+
+}
+
+
+
+
+
+function save(){
+
+localStorage.setItem(
+"subscriptions",
+JSON.stringify(subscriptions)
+);
+
+}
+
+
+
+
+
+function saveNotes(){
+
+localStorage.setItem(
+
+"notes",
+
+document.getElementById("notesBox").value
+
+);
+
+
+alert("Notes saved!");
+
+}
+
+
+
+
+display();
+
+
+</script>
+
+
+</body>
+</html>
