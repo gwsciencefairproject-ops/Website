@@ -1,126 +1,271 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <title>Subscription Tracker</title>
 
 <style>
 
 *{
     box-sizing:border-box;
+    font-family:Inter,Arial,sans-serif;
 }
+
 
 body{
+
     margin:0;
-    font-family:Arial, sans-serif;
-    background:#eef4ff;
+    background:#f5f7fb;
+    color:#111827;
+
 }
 
+
+/* HEADER */
 
 header{
-    background:#2563eb;
+
+    background:linear-gradient(135deg,#2563eb,#1e40af);
     color:white;
-    padding:20px;
+    padding:35px;
     text-align:center;
+
 }
 
 
+header h1{
+
+    margin:0;
+    font-size:35px;
+
+}
+
+
+
+/* NAV */
+
 nav{
+
     display:flex;
     justify-content:center;
-    gap:10px;
+    gap:12px;
+    padding:15px;
     background:white;
-    padding:10px;
+    box-shadow:0 3px 10px #ddd;
+
 }
 
 
 nav button{
-    padding:12px 18px;
+
     border:none;
+    padding:12px 22px;
     border-radius:10px;
     cursor:pointer;
-    background:#e5e7eb;
+    background:#eef2ff;
+    font-weight:bold;
+
 }
 
 
 nav button:hover{
+
     background:#2563eb;
     color:white;
+
 }
 
 
+
+
+
+/* TABS */
+
+
 .tab{
+
     display:none;
-    max-width:800px;
+    max-width:900px;
     margin:auto;
-    padding:20px;
+    padding:30px;
+
 }
 
 
 .active{
+
     display:block;
+
 }
+
+
+
+/* CARDS */
 
 
 .card{
+
     background:white;
-    padding:20px;
-    border-radius:15px;
-    margin-top:20px;
-    box-shadow:0 5px 15px #ccc;
+    padding:30px;
+    border-radius:18px;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+    margin-bottom:25px;
+
 }
 
 
-input, textarea{
+.card h2{
+
+    margin-top:0;
+
+}
+
+
+
+
+/* INPUTS */
+
+
+input,textarea{
 
     width:100%;
-    padding:12px;
-    margin:8px 0;
-    border-radius:8px;
-    border:1px solid #aaa;
+    padding:14px;
+    margin:10px 0;
+    border-radius:12px;
+    border:1px solid #d1d5db;
+    font-size:16px;
+
+}
+
+
+input:focus,
+textarea:focus{
+
+    outline:none;
+    border-color:#2563eb;
 
 }
 
 
 textarea{
-    height:200px;
+
+    height:220px;
+    resize:none;
+
 }
 
 
-.action{
+
+/* BUTTONS */
+
+
+.primary{
 
     background:#2563eb;
     color:white;
     border:none;
-    padding:12px 20px;
-    border-radius:8px;
+    padding:14px 25px;
+    border-radius:12px;
     cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
 
 }
+
+
+.primary:hover{
+
+    background:#1d4ed8;
+
+}
+
+
+
+/* SUBSCRIPTIONS */
 
 
 .subscription{
 
     display:flex;
     justify-content:space-between;
-    background:#f3f4f6;
-    padding:15px;
-    border-radius:10px;
-    margin:10px 0;
+    align-items:center;
+    background:#f8fafc;
+    padding:18px;
+    margin:12px 0;
+    border-radius:14px;
+    border:1px solid #e5e7eb;
 
 }
+
 
 
 .delete{
 
-    background:red;
+    background:#ef4444;
     color:white;
     border:none;
-    padding:8px;
-    border-radius:6px;
+    padding:10px 15px;
+    border-radius:10px;
+    cursor:pointer;
+
+}
+
+
+.delete:hover{
+
+    background:#dc2626;
+
+}
+
+
+
+/* DASHBOARD */
+
+.price{
+
+    font-size:40px;
+    font-weight:bold;
+    color:#2563eb;
+
+}
+
+
+
+
+.empty{
+
+    color:#6b7280;
+    text-align:center;
+    padding:20px;
+
+}
+
+
+
+/* MOBILE */
+
+
+@media(max-width:600px){
+
+nav{
+
+    flex-wrap:wrap;
+
+}
+
+
+.subscription{
+
+    flex-direction:column;
+    gap:15px;
+
+}
+
 }
 
 
 </style>
+
 
 </head>
 
@@ -128,26 +273,34 @@ textarea{
 <body>
 
 
+
 <header>
 
 <h1>Subscription Tracker</h1>
 
+<p>Manage all your subscriptions in one place</p>
+
 </header>
+
+
 
 
 <nav>
 
-<button onclick="openTab('home')">
+<button onclick="openTab('dashboard')">
 Dashboard
 </button>
+
 
 <button onclick="openTab('add')">
 Add Subscription
 </button>
 
+
 <button onclick="openTab('manage')">
 Manage
 </button>
+
 
 <button onclick="openTab('notes')">
 Notes
@@ -159,22 +312,20 @@ Notes
 
 
 
-<div id="home" class="tab active">
+
+
+<!-- DASHBOARD -->
+
+<div id="dashboard" class="tab active">
 
 
 <div class="card">
 
-<h2>Dashboard</h2>
+<h2>Total Monthly Spending</h2>
 
-<h3>
-Monthly Cost:
+<div class="price">
 $<span id="total">0</span>
-</h3>
-
-
-<p>
-Track all your subscriptions in one place.
-</p>
+</div>
 
 
 </div>
@@ -186,6 +337,10 @@ Track all your subscriptions in one place.
 
 
 
+
+
+
+<!-- ADD -->
 
 <div id="add" class="tab">
 
@@ -209,7 +364,8 @@ placeholder="Monthly price">
 type="date">
 
 
-<button class="action"
+
+<button class="primary"
 onclick="addSubscription()">
 
 Add Subscription
@@ -217,7 +373,6 @@ Add Subscription
 </button>
 
 
-
 </div>
 
 
@@ -228,6 +383,9 @@ Add Subscription
 
 
 
+
+
+<!-- MANAGE -->
 
 
 <div id="manage" class="tab">
@@ -236,7 +394,7 @@ Add Subscription
 <div class="card">
 
 
-<h2>Manage Subscriptions</h2>
+<h2>Your Subscriptions</h2>
 
 
 <div id="list"></div>
@@ -254,6 +412,9 @@ Add Subscription
 
 
 
+<!-- NOTES -->
+
+
 <div id="notes" class="tab">
 
 
@@ -267,7 +428,7 @@ Add Subscription
 placeholder="Write notes here..."></textarea>
 
 
-<button class="action"
+<button class="primary"
 onclick="saveNotes()">
 
 Save Notes
@@ -285,7 +446,9 @@ Save Notes
 
 
 
+
 <script>
+
 
 
 let subscriptions =
@@ -293,21 +456,29 @@ JSON.parse(localStorage.getItem("subscriptions"))
 || [];
 
 
+
+
 document.getElementById("notesBox").value =
 localStorage.getItem("notes") || "";
 
 
 
+
+
 function openTab(tab){
 
-    document.querySelectorAll(".tab")
-    .forEach(x=>x.classList.remove("active"));
+
+document.querySelectorAll(".tab")
+.forEach(t=>t.classList.remove("active"));
 
 
-    document.getElementById(tab)
-    .classList.add("active");
+document.getElementById(tab)
+.classList.add("active");
+
 
 }
+
+
 
 
 
@@ -329,13 +500,24 @@ document.getElementById("date").value;
 
 
 
+if(!name || !price){
+
+alert("Fill in all fields");
+
+return;
+
+}
+
+
+
 subscriptions.push({
 
-name:name,
-price:price,
-date:date
+name,
+price,
+date
 
 });
+
 
 
 save();
@@ -343,9 +525,20 @@ save();
 display();
 
 
-alert("Subscription added!");
+
+// CLEAR BOXES AFTER ADDING
+
+document.getElementById("name").value="";
+
+document.getElementById("price").value="";
+
+document.getElementById("date").value="";
+
+
 
 }
+
+
 
 
 
@@ -365,20 +558,33 @@ let total=0;
 
 
 
+if(subscriptions.length===0){
+
+list.innerHTML =
+'<div class="empty">No subscriptions added yet</div>';
+
+}
+
+
+
+
 subscriptions.forEach((s,i)=>{
 
 
-total+=s.price;
+total += s.price;
 
 
 
 list.innerHTML += `
 
+
 <div class="subscription">
+
 
 <div>
 
 <b>${s.name}</b>
+
 <br>
 
 $${s.price}/month
@@ -400,9 +606,13 @@ Delete
 
 </div>
 
+
 `;
 
+
+
 });
+
 
 
 document.getElementById("total")
@@ -410,7 +620,9 @@ document.getElementById("total")
 total.toFixed(2);
 
 
+
 }
+
 
 
 
@@ -418,13 +630,17 @@ total.toFixed(2);
 
 function removeSub(i){
 
+
 subscriptions.splice(i,1);
 
 save();
 
 display();
 
+
 }
+
+
 
 
 
@@ -432,10 +648,15 @@ display();
 
 function save(){
 
+
 localStorage.setItem(
+
 "subscriptions",
+
 JSON.stringify(subscriptions)
+
 );
+
 
 }
 
@@ -443,7 +664,10 @@ JSON.stringify(subscriptions)
 
 
 
+
+
 function saveNotes(){
+
 
 localStorage.setItem(
 
@@ -454,9 +678,11 @@ document.getElementById("notesBox").value
 );
 
 
-alert("Notes saved!");
+alert("Notes saved");
+
 
 }
+
 
 
 
@@ -464,7 +690,9 @@ alert("Notes saved!");
 display();
 
 
+
 </script>
+
 
 
 </body>
