@@ -7,96 +7,116 @@
 <style>
 
 *{
-    box-sizing:border-box;
-    font-family:Inter,Arial,sans-serif;
+box-sizing:border-box;
+font-family:Inter,Segoe UI,Arial,sans-serif;
 }
 
 
 body{
 
-    margin:0;
-    background:#f5f7fb;
-    color:#111827;
-
-}
-
-
-/* HEADER */
-
-header{
-
-    background:linear-gradient(135deg,#2563eb,#1e40af);
-    color:white;
-    padding:35px;
-    text-align:center;
-
-}
-
-
-header h1{
-
-    margin:0;
-    font-size:35px;
+margin:0;
+background:#f8fafc;
+color:#111827;
 
 }
 
 
 
-/* NAV */
+/* APP LAYOUT */
 
-nav{
+.app{
 
-    display:flex;
-    justify-content:center;
-    gap:12px;
-    padding:15px;
-    background:white;
-    box-shadow:0 3px 10px #ddd;
-
-}
-
-
-nav button{
-
-    border:none;
-    padding:12px 22px;
-    border-radius:10px;
-    cursor:pointer;
-    background:#eef2ff;
-    font-weight:bold;
-
-}
-
-
-nav button:hover{
-
-    background:#2563eb;
-    color:white;
+display:flex;
+min-height:100vh;
 
 }
 
 
 
+/* SIDEBAR */
 
 
-/* TABS */
+.sidebar{
+
+width:250px;
+background:#111827;
+color:white;
+padding:30px 20px;
+position:fixed;
+height:100vh;
+
+}
 
 
-.tab{
+.logo{
 
-    display:none;
-    max-width:900px;
-    margin:auto;
-    padding:30px;
+font-size:24px;
+font-weight:700;
+margin-bottom:40px;
 
 }
 
 
-.active{
 
-    display:block;
+.sidebar button{
+
+width:100%;
+background:none;
+border:none;
+color:#cbd5e1;
+text-align:left;
+padding:15px;
+margin-bottom:8px;
+border-radius:12px;
+cursor:pointer;
+font-size:15px;
 
 }
+
+
+.sidebar button:hover{
+
+background:#1f2937;
+color:white;
+
+}
+
+
+
+
+
+/* MAIN */
+
+
+.main{
+
+margin-left:250px;
+width:100%;
+padding:40px;
+
+}
+
+
+
+
+.top{
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+
+}
+
+
+.top h1{
+
+margin:0;
+font-size:32px;
+
+}
+
+
 
 
 
@@ -105,20 +125,62 @@ nav button:hover{
 
 .card{
 
-    background:white;
-    padding:30px;
-    border-radius:18px;
-    box-shadow:0 10px 25px rgba(0,0,0,.08);
-    margin-bottom:25px;
+background:white;
+border-radius:20px;
+padding:30px;
+box-shadow:
+0 10px 30px rgba(0,0,0,.06);
+margin-bottom:25px;
 
 }
 
 
-.card h2{
 
-    margin-top:0;
+
+
+/* DASHBOARD */
+
+
+.big-number{
+
+font-size:48px;
+font-weight:800;
+color:#2563eb;
 
 }
+
+
+.stats{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+
+}
+
+
+
+
+
+.stat{
+
+background:white;
+padding:25px;
+border-radius:18px;
+box-shadow:0 5px 20px rgba(0,0,0,.05);
+
+}
+
+
+.stat h3{
+
+margin:0;
+color:#64748b;
+
+}
+
+
+
 
 
 
@@ -128,72 +190,92 @@ nav button:hover{
 
 input,textarea{
 
-    width:100%;
-    padding:14px;
-    margin:10px 0;
-    border-radius:12px;
-    border:1px solid #d1d5db;
-    font-size:16px;
+width:100%;
+padding:15px;
+margin:10px 0;
+border-radius:12px;
+border:1px solid #e2e8f0;
+font-size:15px;
 
 }
+
 
 
 input:focus,
 textarea:focus{
 
-    outline:none;
-    border-color:#2563eb;
+outline:none;
+border-color:#2563eb;
 
 }
+
 
 
 textarea{
 
-    height:220px;
-    resize:none;
+height:250px;
 
 }
 
 
 
-/* BUTTONS */
+
+
+/* BUTTON */
 
 
 .primary{
 
-    background:#2563eb;
-    color:white;
-    border:none;
-    padding:14px 25px;
-    border-radius:12px;
-    cursor:pointer;
-    font-size:16px;
-    font-weight:bold;
+background:#2563eb;
+color:white;
+border:none;
+padding:14px 22px;
+border-radius:12px;
+cursor:pointer;
+font-weight:600;
 
 }
 
 
 .primary:hover{
 
-    background:#1d4ed8;
+background:#1d4ed8;
 
 }
 
 
 
-/* SUBSCRIPTIONS */
 
+
+/* SUBS */
 
 .subscription{
 
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    background:#f8fafc;
-    padding:18px;
-    margin:12px 0;
-    border-radius:14px;
-    border:1px solid #e5e7eb;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px;
+border:1px solid #e5e7eb;
+border-radius:16px;
+margin-bottom:15px;
+transition:.2s;
+
+}
+
+
+.subscription:hover{
+
+transform:translateY(-2px);
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+
+
+.name{
+
+font-size:18px;
+font-weight:700;
 
 }
 
@@ -201,71 +283,89 @@ textarea{
 
 .delete{
 
-    background:#ef4444;
-    color:white;
-    border:none;
-    padding:10px 15px;
-    border-radius:10px;
-    cursor:pointer;
+background:#fee2e2;
+color:#dc2626;
+border:none;
+padding:10px 15px;
+border-radius:10px;
+cursor:pointer;
 
 }
+
 
 
 .delete:hover{
 
-    background:#dc2626;
+background:#fecaca;
 
 }
 
 
 
-/* DASHBOARD */
 
-.price{
 
-    font-size:40px;
-    font-weight:bold;
-    color:#2563eb;
+
+.tab{
+
+display:none;
 
 }
 
+
+.active{
+
+display:block;
+
+}
 
 
 
 .empty{
 
-    color:#6b7280;
-    text-align:center;
-    padding:20px;
+text-align:center;
+padding:40px;
+color:#64748b;
 
 }
+
+
 
 
 
 /* MOBILE */
 
 
-@media(max-width:600px){
+@media(max-width:700px){
 
-nav{
 
-    flex-wrap:wrap;
+.sidebar{
+
+position:relative;
+width:100%;
+height:auto;
+
+}
+
+
+.app{
+
+display:block;
 
 }
 
 
-.subscription{
+.main{
 
-    flex-direction:column;
-    gap:15px;
-
-}
+margin:0;
+padding:20px;
 
 }
 
+
+
+}
 
 </style>
-
 
 </head>
 
@@ -273,60 +373,91 @@ nav{
 <body>
 
 
-
-<header>
-
-<h1>Subscription Tracker</h1>
-
-<p>Manage all your subscriptions in one place</p>
-
-</header>
+<div class="app">
 
 
 
+<div class="sidebar">
 
-<nav>
+
+<div class="logo">
+
+SubTrack
+
+</div>
+
+
 
 <button onclick="openTab('dashboard')">
-Dashboard
+📊 Dashboard
 </button>
 
 
 <button onclick="openTab('add')">
-Add Subscription
+➕ Add Subscription
 </button>
 
 
 <button onclick="openTab('manage')">
-Manage
+📋 Manage
 </button>
 
 
 <button onclick="openTab('notes')">
-Notes
+📝 Notes
 </button>
 
 
-</nav>
+
+</div>
 
 
 
 
 
 
-<!-- DASHBOARD -->
+<div class="main">
+
+
+<div class="top">
+
+<h1>Dashboard</h1>
+
+</div>
+
+
+
+
+
+
 
 <div id="dashboard" class="tab active">
 
 
-<div class="card">
+<div class="stats">
 
-<h2>Total Monthly Spending</h2>
 
-<div class="price">
+<div class="stat">
+
+<h3>Monthly Spending</h3>
+
+<div class="big-number">
 $<span id="total">0</span>
 </div>
 
+</div>
+
+
+
+<div class="stat">
+
+<h3>Total Subscriptions</h3>
+
+<div class="big-number">
+
+<span id="count">0</span>
+
+</div>
 
 </div>
 
@@ -334,13 +465,14 @@ $<span id="total">0</span>
 </div>
 
 
+</div>
 
 
 
 
 
 
-<!-- ADD -->
+
 
 <div id="add" class="tab">
 
@@ -352,7 +484,7 @@ $<span id="total">0</span>
 
 
 <input id="name"
-placeholder="Subscription name">
+placeholder="Netflix, Spotify, Gym...">
 
 
 <input id="price"
@@ -373,19 +505,18 @@ Add Subscription
 </button>
 
 
-</div>
-
 
 </div>
 
 
+</div>
 
 
 
 
 
 
-<!-- MANAGE -->
+
 
 
 <div id="manage" class="tab">
@@ -412,9 +543,6 @@ Add Subscription
 
 
 
-<!-- NOTES -->
-
-
 <div id="notes" class="tab">
 
 
@@ -425,7 +553,7 @@ Add Subscription
 
 
 <textarea id="notesBox"
-placeholder="Write notes here..."></textarea>
+placeholder="Write anything here..."></textarea>
 
 
 <button class="primary"
@@ -447,14 +575,21 @@ Save Notes
 
 
 
+</div>
+
+</div>
+
+
+
+
+
+
+
 <script>
 
 
-
 let subscriptions =
-JSON.parse(localStorage.getItem("subscriptions"))
-|| [];
-
+JSON.parse(localStorage.getItem("subscriptions")) || [];
 
 
 
@@ -467,17 +602,14 @@ localStorage.getItem("notes") || "";
 
 function openTab(tab){
 
-
 document.querySelectorAll(".tab")
-.forEach(t=>t.classList.remove("active"));
+.forEach(x=>x.classList.remove("active"));
 
 
 document.getElementById(tab)
 .classList.add("active");
 
-
 }
-
 
 
 
@@ -502,7 +634,7 @@ document.getElementById("date").value;
 
 if(!name || !price){
 
-alert("Fill in all fields");
+alert("Complete all fields");
 
 return;
 
@@ -511,13 +643,10 @@ return;
 
 
 subscriptions.push({
-
 name,
 price,
 date
-
 });
-
 
 
 save();
@@ -526,14 +655,9 @@ display();
 
 
 
-// CLEAR BOXES AFTER ADDING
-
 document.getElementById("name").value="";
-
 document.getElementById("price").value="";
-
 document.getElementById("date").value="";
-
 
 
 }
@@ -547,9 +671,7 @@ document.getElementById("date").value="";
 function display(){
 
 
-let list =
-document.getElementById("list");
-
+let list=document.getElementById("list");
 
 list.innerHTML="";
 
@@ -558,34 +680,25 @@ let total=0;
 
 
 
-if(subscriptions.length===0){
-
-list.innerHTML =
-'<div class="empty">No subscriptions added yet</div>';
-
-}
-
-
-
-
 subscriptions.forEach((s,i)=>{
 
 
-total += s.price;
+total+=s.price;
 
 
 
-list.innerHTML += `
-
+list.innerHTML+=`
 
 <div class="subscription">
 
-
 <div>
 
-<b>${s.name}</b>
+<div class="name">
 
-<br>
+${s.name}
+
+</div>
+
 
 $${s.price}/month
 
@@ -593,7 +706,9 @@ $${s.price}/month
 
 Renewal: ${s.date}
 
+
 </div>
+
 
 
 <button class="delete"
@@ -615,13 +730,26 @@ Delete
 
 
 
-document.getElementById("total")
-.innerText =
-total.toFixed(2);
+if(subscriptions.length===0){
 
+list.innerHTML=
+'<div class="empty">No subscriptions yet</div>';
+
+}
+
+
+
+document.getElementById("total")
+.innerText=total.toFixed(2);
+
+
+
+document.getElementById("count")
+.innerText=subscriptions.length;
 
 
 }
+
 
 
 
@@ -630,17 +758,13 @@ total.toFixed(2);
 
 function removeSub(i){
 
-
 subscriptions.splice(i,1);
 
 save();
 
 display();
 
-
 }
-
-
 
 
 
@@ -648,19 +772,12 @@ display();
 
 function save(){
 
-
 localStorage.setItem(
-
 "subscriptions",
-
 JSON.stringify(subscriptions)
-
 );
 
-
 }
-
-
 
 
 
@@ -668,31 +785,22 @@ JSON.stringify(subscriptions)
 
 function saveNotes(){
 
-
 localStorage.setItem(
-
 "notes",
-
 document.getElementById("notesBox").value
-
 );
 
 
-alert("Notes saved");
-
+alert("Saved");
 
 }
-
-
 
 
 
 display();
 
 
-
 </script>
-
 
 
 </body>
