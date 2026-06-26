@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
-<title>Subscription Tracker</title>
+<title>SubTrack Pro</title>
 
 <style>
 
 *{
 box-sizing:border-box;
-font-family:Inter,Segoe UI,Arial,sans-serif;
+font-family:Inter,Arial,sans-serif;
 }
 
 
 body{
 
 margin:0;
-background:#f8fafc;
+background:#f1f3f6;
 color:#111827;
 
 }
 
 
-
-/* APP LAYOUT */
+/* LAYOUT */
 
 .app{
 
 display:flex;
-min-height:100vh;
+height:100vh;
 
 }
 
@@ -35,24 +35,31 @@ min-height:100vh;
 
 /* SIDEBAR */
 
-
 .sidebar{
 
-width:250px;
-background:#111827;
+width:260px;
+background:#0f172a;
 color:white;
-padding:30px 20px;
-position:fixed;
-height:100vh;
+padding:35px 25px;
 
 }
 
 
-.logo{
+.brand{
 
-font-size:24px;
+font-size:22px;
 font-weight:700;
-margin-bottom:40px;
+letter-spacing:-.5px;
+margin-bottom:45px;
+
+}
+
+
+.menu{
+
+color:#94a3b8;
+font-size:13px;
+margin-bottom:12px;
 
 }
 
@@ -61,13 +68,11 @@ margin-bottom:40px;
 .sidebar button{
 
 width:100%;
-background:none;
-border:none;
+background:transparent;
+border:0;
 color:#cbd5e1;
+padding:14px;
 text-align:left;
-padding:15px;
-margin-bottom:8px;
-border-radius:12px;
 cursor:pointer;
 font-size:15px;
 
@@ -76,7 +81,7 @@ font-size:15px;
 
 .sidebar button:hover{
 
-background:#1f2937;
+background:#1e293b;
 color:white;
 
 }
@@ -90,96 +95,73 @@ color:white;
 
 .main{
 
-margin-left:250px;
-width:100%;
-padding:40px;
+flex:1;
+padding:35px;
+overflow:auto;
 
 }
 
 
 
+.title{
 
-.top{
-
-display:flex;
-justify-content:space-between;
-align-items:center;
+font-size:30px;
+font-weight:700;
 margin-bottom:30px;
 
 }
 
 
-.top h1{
-
-margin:0;
-font-size:32px;
-
-}
 
 
-
-
-
-/* CARDS */
+/* CONTENT */
 
 
 .card{
 
 background:white;
-border-radius:20px;
-padding:30px;
-box-shadow:
-0 10px 30px rgba(0,0,0,.06);
+border:1px solid #e5e7eb;
+padding:28px;
 margin-bottom:25px;
 
 }
 
 
 
-
-
-/* DASHBOARD */
-
-
-.big-number{
-
-font-size:48px;
-font-weight:800;
-color:#2563eb;
-
-}
-
-
-.stats{
+.grid{
 
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+grid-template-columns:repeat(3,1fr);
 gap:20px;
 
 }
 
 
 
-
-
-.stat{
+.metric{
 
 background:white;
+border:1px solid #e5e7eb;
 padding:25px;
-border-radius:18px;
-box-shadow:0 5px 20px rgba(0,0,0,.05);
 
 }
 
 
-.stat h3{
+.metric h4{
 
 margin:0;
 color:#64748b;
+font-weight:500;
 
 }
 
 
+.metric span{
+
+font-size:38px;
+font-weight:700;
+
+}
 
 
 
@@ -188,27 +170,16 @@ color:#64748b;
 /* INPUTS */
 
 
-input,textarea{
+input,
+textarea{
 
 width:100%;
-padding:15px;
-margin:10px 0;
-border-radius:12px;
-border:1px solid #e2e8f0;
+padding:13px;
+margin:8px 0;
+border:1px solid #cbd5e1;
 font-size:15px;
 
 }
-
-
-
-input:focus,
-textarea:focus{
-
-outline:none;
-border-color:#2563eb;
-
-}
-
 
 
 textarea{
@@ -219,18 +190,24 @@ height:250px;
 
 
 
+input:focus,
+textarea:focus{
+
+outline:2px solid #2563eb;
+
+}
+
+
 
 
 /* BUTTON */
 
-
 .primary{
 
-background:#2563eb;
+background:#111827;
 color:white;
 border:none;
-padding:14px 22px;
-border-radius:12px;
+padding:13px 22px;
 cursor:pointer;
 font-weight:600;
 
@@ -239,7 +216,7 @@ font-weight:600;
 
 .primary:hover{
 
-background:#1d4ed8;
+background:#000;
 
 }
 
@@ -247,35 +224,37 @@ background:#1d4ed8;
 
 
 
-/* SUBS */
+
+/* TABLE STYLE */
+
 
 .subscription{
 
-display:flex;
-justify-content:space-between;
+display:grid;
+grid-template-columns:2fr 1fr 1fr 100px;
 align-items:center;
-padding:20px;
-border:1px solid #e5e7eb;
-border-radius:16px;
-margin-bottom:15px;
-transition:.2s;
+
+border-top:1px solid #e5e7eb;
+
+padding:18px 10px;
 
 }
+
 
 
 .subscription:hover{
 
-transform:translateY(-2px);
-box-shadow:0 8px 20px rgba(0,0,0,.08);
+background:#f8fafc;
 
 }
 
 
 
-.name{
+.header{
 
-font-size:18px;
-font-weight:700;
+font-size:12px;
+color:#64748b;
+text-transform:uppercase;
 
 }
 
@@ -283,23 +262,21 @@ font-weight:700;
 
 .delete{
 
-background:#fee2e2;
+background:none;
+border:1px solid #dc2626;
 color:#dc2626;
-border:none;
-padding:10px 15px;
-border-radius:10px;
+padding:8px 12px;
 cursor:pointer;
 
 }
 
 
-
 .delete:hover{
 
-background:#fecaca;
+background:#dc2626;
+color:white;
 
 }
-
 
 
 
@@ -320,10 +297,11 @@ display:block;
 
 
 
+
 .empty{
 
-text-align:center;
 padding:40px;
+text-align:center;
 color:#64748b;
 
 }
@@ -332,36 +310,28 @@ color:#64748b;
 
 
 
-/* MOBILE */
 
+@media(max-width:900px){
 
-@media(max-width:700px){
+.grid{
+
+grid-template-columns:1fr;
+
+}
 
 
 .sidebar{
 
-position:relative;
-width:100%;
-height:auto;
+width:80px;
 
 }
 
 
-.app{
+.brand{
 
-display:block;
-
-}
-
-
-.main{
-
-margin:0;
-padding:20px;
+display:none;
 
 }
-
-
 
 }
 
@@ -370,46 +340,51 @@ padding:20px;
 </head>
 
 
+
+
 <body>
 
 
 <div class="app">
 
 
-
 <div class="sidebar">
 
 
-<div class="logo">
+<div class="brand">
 
-SubTrack
+SUBTRACK PRO
 
 </div>
 
 
+<div class="menu">
+MENU
+</div>
+
 
 <button onclick="openTab('dashboard')">
-📊 Dashboard
+Dashboard
 </button>
 
 
 <button onclick="openTab('add')">
-➕ Add Subscription
+Add Subscription
 </button>
 
 
 <button onclick="openTab('manage')">
-📋 Manage
+Subscriptions
 </button>
 
 
 <button onclick="openTab('notes')">
-📝 Notes
+Notes
 </button>
 
 
-
 </div>
+
 
 
 
@@ -419,9 +394,9 @@ SubTrack
 <div class="main">
 
 
-<div class="top">
+<div class="title">
 
-<h1>Dashboard</h1>
+Subscription Management
 
 </div>
 
@@ -434,32 +409,52 @@ SubTrack
 <div id="dashboard" class="tab active">
 
 
-<div class="stats">
+<div class="grid">
 
 
-<div class="stat">
+<div class="metric">
 
-<h3>Monthly Spending</h3>
+<h4>
+MONTHLY EXPENSE
+</h4>
 
-<div class="big-number">
-$<span id="total">0</span>
-</div>
+<span>
+$<label id="total">0</label>
+</span>
 
-</div>
-
-
-
-<div class="stat">
-
-<h3>Total Subscriptions</h3>
-
-<div class="big-number">
-
-<span id="count">0</span>
 
 </div>
 
+
+
+<div class="metric">
+
+<h4>
+ACTIVE SUBSCRIPTIONS
+</h4>
+
+<span id="count">
+0
+</span>
+
+
 </div>
+
+
+
+<div class="metric">
+
+<h4>
+STATUS
+</h4>
+
+<span>
+Active
+</span>
+
+
+</div>
+
 
 
 </div>
@@ -484,34 +479,30 @@ $<span id="total">0</span>
 
 
 <input id="name"
-placeholder="Netflix, Spotify, Gym...">
+placeholder="Name">
 
 
 <input id="price"
 type="number"
-placeholder="Monthly price">
+placeholder="Monthly Cost">
 
 
 <input id="date"
 type="date">
 
 
-
 <button class="primary"
 onclick="addSubscription()">
 
-Add Subscription
+Create Subscription
 
 </button>
 
 
-
 </div>
 
 
 </div>
-
-
 
 
 
@@ -525,7 +516,17 @@ Add Subscription
 <div class="card">
 
 
-<h2>Your Subscriptions</h2>
+<h2>Subscription Database</h2>
+
+
+<div class="subscription header">
+
+<div>Name</div>
+<div>Cost</div>
+<div>Renewal</div>
+<div></div>
+
+</div>
 
 
 <div id="list"></div>
@@ -549,11 +550,11 @@ Add Subscription
 <div class="card">
 
 
-<h2>Notes</h2>
+<h2>Internal Notes</h2>
 
 
 <textarea id="notesBox"
-placeholder="Write anything here..."></textarea>
+placeholder="Enter notes..."></textarea>
 
 
 <button class="primary"
@@ -589,12 +590,11 @@ Save Notes
 
 
 let subscriptions =
-JSON.parse(localStorage.getItem("subscriptions")) || [];
+JSON.parse(localStorage.getItem("subscriptions"))||[];
 
 
-
-document.getElementById("notesBox").value =
-localStorage.getItem("notes") || "";
+notesBox.value =
+localStorage.getItem("notes")||";
 
 
 
@@ -616,29 +616,19 @@ document.getElementById(tab)
 
 
 
+
 function addSubscription(){
 
 
-let name =
-document.getElementById("name").value;
+let name=document.getElementById("name").value;
 
+let price=Number(document.getElementById("price").value);
 
-let price =
-Number(document.getElementById("price").value);
-
-
-let date =
-document.getElementById("date").value;
+let date=document.getElementById("date").value;
 
 
 
-if(!name || !price){
-
-alert("Complete all fields");
-
-return;
-
-}
+if(!name||!price)return;
 
 
 
@@ -654,6 +644,7 @@ save();
 display();
 
 
+// CLEAR FORM
 
 document.getElementById("name").value="";
 document.getElementById("price").value="";
@@ -692,31 +683,30 @@ list.innerHTML+=`
 <div class="subscription">
 
 <div>
-
-<div class="name">
-
 ${s.name}
+</div>
 
+<div>
+$${s.price}
 </div>
 
 
-$${s.price}/month
-
-<br>
-
-Renewal: ${s.date}
-
-
+<div>
+${s.date}
 </div>
 
 
+<div>
 
 <button class="delete"
 onclick="removeSub(${i})">
 
-Delete
+Remove
 
 </button>
+
+
+</div>
 
 
 </div>
@@ -730,26 +720,23 @@ Delete
 
 
 
-if(subscriptions.length===0){
+if(subscriptions.length==0)
 
 list.innerHTML=
-'<div class="empty">No subscriptions yet</div>';
-
-}
+"<div class='empty'>No subscriptions found</div>";
 
 
 
-document.getElementById("total")
-.innerText=total.toFixed(2);
+
+document.getElementById("total").innerText=
+total.toFixed(2);
 
 
-
-document.getElementById("count")
-.innerText=subscriptions.length;
+document.getElementById("count").innerText=
+subscriptions.length;
 
 
 }
-
 
 
 
@@ -781,8 +768,6 @@ JSON.stringify(subscriptions)
 
 
 
-
-
 function saveNotes(){
 
 localStorage.setItem(
@@ -790,10 +775,8 @@ localStorage.setItem(
 document.getElementById("notesBox").value
 );
 
-
-alert("Saved");
-
 }
+
 
 
 
@@ -804,4 +787,5 @@ display();
 
 
 </body>
+
 </html>
