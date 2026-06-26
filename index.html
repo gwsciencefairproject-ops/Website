@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Subscription Tracker</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+font-family:Inter,Segoe UI,Arial,sans-serif;
+}
+
+
+body{
+
+margin:0;
+background:#f8fafc;
+color:#111827;
+
+}
+
+
+
+/* APP LAYOUT */
+
+.app{
+
+display:flex;
+min-height:100vh;
+
+}
+
+
+
+/* SIDEBAR */
+
+
+.sidebar{
+
+width:250px;
+background:#111827;
+color:white;
+padding:30px 20px;
+position:fixed;
+height:100vh;
+
+}
+
+
+.logo{
+
+font-size:24px;
+font-weight:700;
+margin-bottom:40px;
+
+}
+
+
+
+.sidebar button{
+
+width:100%;
+background:none;
+border:none;
+color:#cbd5e1;
+text-align:left;
+padding:15px;
+margin-bottom:8px;
+border-radius:12px;
+cursor:pointer;
+font-size:15px;
+
+}
+
+
+.sidebar button:hover{
+
+background:#1f2937;
+color:white;
+
+}
+
+
+
+
+
+/* MAIN */
+
+
+.main{
+
+margin-left:250px;
+width:100%;
+padding:40px;
+
+}
+
+
+
+
+.top{
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+
+}
+
+
+.top h1{
+
+margin:0;
+font-size:32px;
+
+}
+
+
+
+
+
+/* CARDS */
+
+
+.card{
+
+background:white;
+border-radius:20px;
+padding:30px;
+box-shadow:
+0 10px 30px rgba(0,0,0,.06);
+margin-bottom:25px;
+
+}
+
+
+
+
+
+/* DASHBOARD */
+
+
+.big-number{
+
+font-size:48px;
+font-weight:800;
+color:#2563eb;
+
+}
+
+
+.stats{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+
+}
+
+
+
+
+
+.stat{
+
+background:white;
+padding:25px;
+border-radius:18px;
+box-shadow:0 5px 20px rgba(0,0,0,.05);
+
+}
+
+
+.stat h3{
+
+margin:0;
+color:#64748b;
+
+}
+
+
+
+
+
+
+
+/* INPUTS */
+
+
+input,textarea{
+
+width:100%;
+padding:15px;
+margin:10px 0;
+border-radius:12px;
+border:1px solid #e2e8f0;
+font-size:15px;
+
+}
+
+
+
+input:focus,
+textarea:focus{
+
+outline:none;
+border-color:#2563eb;
+
+}
+
+
+
+textarea{
+
+height:250px;
+
+}
+
+
+
+
+
+/* BUTTON */
+
+
+.primary{
+
+background:#2563eb;
+color:white;
+border:none;
+padding:14px 22px;
+border-radius:12px;
+cursor:pointer;
+font-weight:600;
+
+}
+
+
+.primary:hover{
+
+background:#1d4ed8;
+
+}
+
+
+
+
+
+/* SUBS */
+
+.subscription{
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px;
+border:1px solid #e5e7eb;
+border-radius:16px;
+margin-bottom:15px;
+transition:.2s;
+
+}
+
+
+.subscription:hover{
+
+transform:translateY(-2px);
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+
+
+.name{
+
+font-size:18px;
+font-weight:700;
+
+}
+
+
+
+.delete{
+
+background:#fee2e2;
+color:#dc2626;
+border:none;
+padding:10px 15px;
+border-radius:10px;
+cursor:pointer;
+
+}
+
+
+
+.delete:hover{
+
+background:#fecaca;
+
+}
+
+
+
+
+
+
+.tab{
+
+display:none;
+
+}
+
+
+.active{
+
+display:block;
+
+}
+
+
+
+.empty{
+
+text-align:center;
+padding:40px;
+color:#64748b;
+
+}
+
+
+
+
+
+/* MOBILE */
+
+
+@media(max-width:700px){
+
+
+.sidebar{
+
+position:relative;
+width:100%;
+height:auto;
+
+}
+
+
+.app{
+
+display:block;
+
+}
+
+
+.main{
+
+margin:0;
+padding:20px;
+
+}
+
+
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+
+<div class="sidebar">
+
+
+<div class="logo">
+
+SubTrack
+
+</div>
+
+
+
+<button onclick="openTab('dashboard')">
+📊 Dashboard
+</button>
+
+
+<button onclick="openTab('add')">
+➕ Add Subscription
+</button>
+
+
+<button onclick="openTab('manage')">
+📋 Manage
+</button>
+
+
+<button onclick="openTab('notes')">
+📝 Notes
+</button>
+
+
+
+</div>
+
+
+
+
+
+
+<div class="main">
+
+
+<div class="top">
+
+<h1>Dashboard</h1>
+
+</div>
+
+
+
+
+
+
+
+<div id="dashboard" class="tab active">
+
+
+<div class="stats">
+
+
+<div class="stat">
+
+<h3>Monthly Spending</h3>
+
+<div class="big-number">
+$<span id="total">0</span>
+</div>
+
+</div>
+
+
+
+<div class="stat">
+
+<h3>Total Subscriptions</h3>
+
+<div class="big-number">
+
+<span id="count">0</span>
+
+</div>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div id="add" class="tab">
+
+
+<div class="card">
+
+
+<h2>Add Subscription</h2>
+
+
+<input id="name"
+placeholder="Netflix, Spotify, Gym...">
+
+
+<input id="price"
+type="number"
+placeholder="Monthly price">
+
+
+<input id="date"
+type="date">
+
+
+
+<button class="primary"
+onclick="addSubscription()">
+
+Add Subscription
+
+</button>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div id="manage" class="tab">
+
+
+<div class="card">
+
+
+<h2>Your Subscriptions</h2>
+
+
+<div id="list"></div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div id="notes" class="tab">
+
+
+<div class="card">
+
+
+<h2>Notes</h2>
+
+
+<textarea id="notesBox"
+placeholder="Write anything here..."></textarea>
+
+
+<button class="primary"
+onclick="saveNotes()">
+
+Save Notes
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+<script>
+
+
+let subscriptions =
+JSON.parse(localStorage.getItem("subscriptions")) || [];
+
+
+
+document.getElementById("notesBox").value =
+localStorage.getItem("notes") || "";
+
+
+
+
+
+function openTab(tab){
+
+document.querySelectorAll(".tab")
+.forEach(x=>x.classList.remove("active"));
+
+
+document.getElementById(tab)
+.classList.add("active");
+
+}
+
+
+
+
+
+
+function addSubscription(){
+
+
+let name =
+document.getElementById("name").value;
+
+
+let price =
+Number(document.getElementById("price").value);
+
+
+let date =
+document.getElementById("date").value;
+
+
+
+if(!name || !price){
+
+alert("Complete all fields");
+
+return;
+
+}
+
+
+
+subscriptions.push({
+name,
+price,
+date
+});
+
+
+save();
+
+display();
+
+
+
+document.getElementById("name").value="";
+document.getElementById("price").value="";
+document.getElementById("date").value="";
+
+
+}
+
+
+
+
+
+
+
+function display(){
+
+
+let list=document.getElementById("list");
+
+list.innerHTML="";
+
+
+let total=0;
+
+
+
+subscriptions.forEach((s,i)=>{
+
+
+total+=s.price;
+
+
+
+list.innerHTML+=`
+
+<div class="subscription">
+
+<div>
+
+<div class="name">
+
+${s.name}
+
+</div>
+
+
+$${s.price}/month
+
+<br>
+
+Renewal: ${s.date}
+
+
+</div>
+
+
+
+<button class="delete"
+onclick="removeSub(${i})">
+
+Delete
+
+</button>
+
+
+</div>
+
+
+`;
+
+
+
+});
+
+
+
+if(subscriptions.length===0){
+
+list.innerHTML=
+'<div class="empty">No subscriptions yet</div>';
+
+}
+
+
+
+document.getElementById("total")
+.innerText=total.toFixed(2);
+
+
+
+document.getElementById("count")
+.innerText=subscriptions.length;
+
+
+}
+
+
+
+
+
+
+
+function removeSub(i){
+
+subscriptions.splice(i,1);
+
+save();
+
+display();
+
+}
+
+
+
+
+
+function save(){
+
+localStorage.setItem(
+"subscriptions",
+JSON.stringify(subscriptions)
+);
+
+}
+
+
+
+
+
+function saveNotes(){
+
+localStorage.setItem(
+"notes",
+document.getElementById("notesBox").value
+);
+
+
+alert("Saved");
+
+}
+
+
+
+display();
+
+
+</script>
+
+
+</body>
+</html>
