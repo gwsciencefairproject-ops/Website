@@ -1,1011 +1,259 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-
-<title>SubTrack Pro</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SecureNotes Pro</title>
 
 <style>
-
-*{
-box-sizing:border-box;
-font-family:Inter,Segoe UI,Arial,sans-serif;
-}
-
-
-body{
-
-margin:0;
-background:#f4f6f8;
-color:#111827;
-
-}
-
-
-
-.app{
-
-display:flex;
-min-height:100vh;
-
-}
-
-
-
-/* SIDEBAR */
-
-.sidebar{
-
-width:260px;
-background:#0b1220;
-color:white;
-padding:30px;
-
-}
-
-
-.logo{
-
-font-size:24px;
-font-weight:800;
-margin-bottom:45px;
-
-}
-
-
-.sidebar button{
-
-width:100%;
-padding:14px;
-
-background:none;
-
-border:0;
-
-color:#cbd5e1;
-
-text-align:left;
-
-border-radius:8px;
-
-cursor:pointer;
-
-margin-bottom:8px;
-
-}
-
-
-.sidebar button:hover{
-
-background:#1e293b;
-color:white;
-
-}
-
-
-
-
-
-/* MAIN */
-
-
-.main{
-
-flex:1;
-padding:35px;
-
-}
-
-
-.title{
-
-font-size:30px;
-font-weight:800;
-
-}
-
-
-
-
-
-/* DASHBOARD */
-
-
-.stats{
-
-display:grid;
-
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-
-gap:20px;
-
-margin:30px 0;
-
-}
-
-
-.stat{
-
-background:white;
-
-padding:25px;
-
-border:1px solid #e5e7eb;
-
-border-radius:14px;
-
-}
-
-
-.label{
-
-font-size:13px;
-
-color:#64748b;
-
-}
-
-
-.value{
-
-font-size:35px;
-
-font-weight:800;
-
-margin-top:10px;
-
-}
-
-
-
-
-
-.card{
-
-background:white;
-
-padding:25px;
-
-border-radius:14px;
-
-border:1px solid #e5e7eb;
-
-margin-bottom:25px;
-
-}
-
-
-
-
-/* FORMS */
-
-
-input,select,textarea{
-
-width:100%;
-
-padding:13px;
-
-border:1px solid #cbd5e1;
-
-border-radius:8px;
-
-margin:8px 0;
-
-}
-
-
-textarea{
-
-height:230px;
-
-}
-
-
-
-.primary{
-
-background:#111827;
-
-color:white;
-
-border:0;
-
-padding:13px 22px;
-
-border-radius:8px;
-
-cursor:pointer;
-
-}
-
-
-
-
-
-/* TABLE */
-
-
-.table{
-
-background:white;
-
-border:1px solid #e5e7eb;
-
-border-radius:14px;
-
-overflow:hidden;
-
-}
-
-
-.row{
-
-display:grid;
-
-grid-template-columns:2fr 1fr 1fr 1fr 100px;
-
-padding:18px;
-
-border-bottom:1px solid #e5e7eb;
-
-align-items:center;
-
-}
-
-
-
-.row:hover{
-
-background:#f8fafc;
-
-}
-
-
-
-.header{
-
-font-size:12px;
-
-color:#64748b;
-
-text-transform:uppercase;
-
-}
-
-
-
-.badge{
-
-background:#dcfce7;
-
-color:#166534;
-
-padding:5px 10px;
-
-border-radius:20px;
-
-font-size:12px;
-
-width:max-content;
-
-}
-
-
-
-
-.delete{
-
-background:white;
-
-border:1px solid #ef4444;
-
-color:#ef4444;
-
-padding:8px;
-
-border-radius:6px;
-
-cursor:pointer;
-
-}
-
-
-
-
-
-/* UPCOMING */
-
-
-.upcoming{
-
-display:flex;
-
-justify-content:space-between;
-
-padding:15px;
-
-border-bottom:1px solid #eee;
-
-}
-
-
-
-
-
-.tab{
-
-display:none;
-
-}
-
-
-.active{
-
-display:block;
-
-}
-
-
-
-
-
-@media(max-width:800px){
-
-.sidebar{
-
-width:100%;
-
-}
-
-
-.app{
-
-display:block;
-
-}
-
-
-.row{
-
-grid-template-columns:1fr;
-
-gap:10px;
-
-}
-
-}
-
-
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+        display: flex;
+        height: 100vh;
+    }
+
+    .sidebar {
+        width: 280px;
+        background: #111827;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid #1f2937;
+    }
+
+    .title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    button {
+        background: #2563eb;
+        border: none;
+        color: white;
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    button:hover {
+        background: #1d4ed8;
+    }
+
+    .note-list {
+        margin-top: 10px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .note-item {
+        padding: 10px;
+        background: #1f2937;
+        margin-bottom: 8px;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .note-item:hover {
+        background: #374151;
+    }
+
+    .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    textarea {
+        flex: 1;
+        padding: 20px;
+        font-size: 16px;
+        border: none;
+        outline: none;
+        resize: none;
+        background: #0b1220;
+        color: #e5e7eb;
+    }
+
+    .topbar {
+        padding: 10px;
+        background: #111827;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #1f2937;
+    }
+
+    input {
+        padding: 8px;
+        border-radius: 6px;
+        border: none;
+        width: 200px;
+    }
 </style>
-
-
 </head>
-
-
 
 <body>
 
-
-
-<div class="app">
-
-
-
 <div class="sidebar">
-
-
-<div class="logo">
-SubTrack Pro
+    <div class="title">🔐 SecureNotes Pro</div>
+    <button onclick="createNote()">+ New Note</button>
+    <div class="note-list" id="noteList"></div>
 </div>
-
-
-
-<button onclick="openTab('dashboard')">
-Dashboard
-</button>
-
-
-<button onclick="openTab('add')">
-Add Subscription
-</button>
-
-
-<button onclick="openTab('manage')">
-Manage
-</button>
-
-
-<button onclick="openTab('notes')">
-Notes
-</button>
-
-
-
-</div>
-
-
-
-
-
-
-
-
 
 <div class="main">
-
-
-<h1 class="title">
-Subscription Overview
-</h1>
-
-
-
-
-
-
-<div id="dashboard" class="tab active">
-
-
-<div class="stats">
-
-
-<div class="stat">
-
-<div class="label">
-MONTHLY COST
+    <div class="topbar">
+        <input type="password" id="password" placeholder="Enter password to unlock"/>
+        <button onclick="lock()">Lock</button>
+    </div>
+    <textarea id="editor" placeholder="Unlock with password to start..." disabled></textarea>
 </div>
-
-<div class="value">
-$<span id="total">0</span>
-</div>
-
-</div>
-
-
-
-
-<div class="stat">
-
-<div class="label">
-YEARLY COST
-</div>
-
-<div class="value">
-$<span id="year">0</span>
-</div>
-
-</div>
-
-
-
-
-<div class="stat">
-
-<div class="label">
-ACTIVE SERVICES
-</div>
-
-<div class="value"
-id="count">
-
-0
-
-</div>
-
-
-</div>
-
-
-
-<div class="stat">
-
-<div class="label">
-AVERAGE COST
-</div>
-
-
-<div class="value">
-
-$<span id="average">0</span>
-
-</div>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-<div class="card">
-
-
-<h2>
-Upcoming Renewals
-</h2>
-
-
-<div id="upcoming"></div>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-
-
-
-<div id="add" class="tab">
-
-
-<div class="card">
-
-
-<h2>
-Create Subscription
-</h2>
-
-
-<input id="name"
-placeholder="Service name">
-
-
-<input id="price"
-type="number"
-placeholder="Monthly cost">
-
-
-<select id="category">
-
-
-<option>
-Streaming
-</option>
-
-
-<option>
-Software
-</option>
-
-
-<option>
-Fitness
-</option>
-
-
-<option>
-Other
-</option>
-
-
-</select>
-
-
-
-<input id="date"
-type="date">
-
-
-<button class="primary"
-onclick="addSub()">
-
-Add
-
-</button>
-
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<div id="manage" class="tab">
-
-
-<div class="card">
-
-
-<h2>
-Subscription Database
-</h2>
-
-
-
-<input placeholder="Search..."
-id="search"
-onkeyup="display()">
-
-
-
-<div class="table">
-
-
-<div class="row header">
-
-<div>Name</div>
-
-<div>Category</div>
-
-<div>Price</div>
-
-<div>Status</div>
-
-<div></div>
-
-</div>
-
-
-<div id="list"></div>
-
-
-</div>
-
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-<div id="notes" class="tab">
-
-
-<div class="card">
-
-
-<h2>
-Notes
-</h2>
-
-
-<textarea id="notesBox"></textarea>
-
-
-<button class="primary"
-onclick="saveNotes()">
-
-Save Notes
-
-</button>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-</div>
-
-</div>
-
-
-
-
-
-
-
-
 
 <script>
+let notes = [];
+let currentIndex = null;
+let key = null;
 
-
-let subs =
-JSON.parse(localStorage.getItem("subs"))
-|| [];
-
-
-
-notesBox.value =
-localStorage.getItem("notes")
-|| "";
-
-
-
-
-
-function openTab(x){
-
-document.querySelectorAll(".tab")
-.forEach(t=>t.classList.remove("active"));
-
-
-document.getElementById(x)
-.classList.add("active");
-
+function encode(txt){
+    return new TextEncoder().encode(txt);
 }
 
+function decode(buf){
+    return new TextDecoder().decode(buf);
+}
 
+async function getKey(password){
+    const enc = encode(password);
+    const baseKey = await crypto.subtle.importKey(
+        "raw",
+        enc,
+        "PBKDF2",
+        false,
+        ["deriveKey"]
+    );
 
+    return crypto.subtle.deriveKey(
+        {
+            name: "PBKDF2",
+            salt: encode("secure-notes-salt"),
+            iterations: 100000,
+            hash: "SHA-256"
+        },
+        baseKey,
+        { name: "AES-GCM", length: 256 },
+        false,
+        ["encrypt","decrypt"]
+    );
+}
 
+async function encrypt(text){
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const data = encode(text);
 
+    const encrypted = await crypto.subtle.encrypt(
+        { name: "AES-GCM", iv },
+        key,
+        data
+    );
 
-function addSub(){
+    return {
+        iv: Array.from(iv),
+        data: Array.from(new Uint8Array(encrypted))
+    };
+}
 
+async function decrypt(obj){
+    const iv = new Uint8Array(obj.iv);
+    const data = new Uint8Array(obj.data);
 
-let name=document.getElementById("name").value;
+    const decrypted = await crypto.subtle.decrypt(
+        { name: "AES-GCM", iv },
+        key,
+        data
+    );
 
-let price=Number(document.getElementById("price").value);
+    return decode(decrypted);
+}
 
-let category=document.getElementById("category").value;
+function saveLocal(){
+    localStorage.setItem("secure_notes", JSON.stringify(notes));
+}
 
-let date=document.getElementById("date").value;
+function loadLocal(){
+    const data = localStorage.getItem("secure_notes");
+    if(data) notes = JSON.parse(data);
+}
 
+function render(){
+    const list = document.getElementById("noteList");
+    list.innerHTML = "";
 
+    notes.forEach((n,i)=>{
+        const div = document.createElement("div");
+        div.className = "note-item";
+        div.textContent = n.title || "Untitled Note";
+        div.onclick = ()=>openNote(i);
+        list.appendChild(div);
+    });
+}
 
-if(!name||!price)return;
+function createNote(){
+    notes.push({ title:"New Note", content:{iv:[],data:[]} });
+    render();
+    openNote(notes.length-1);
+    saveLocal();
+}
 
+function openNote(i){
+    currentIndex = i;
+    document.getElementById("editor").value = "";
+}
 
+document.getElementById("editor").addEventListener("input", async (e)=>{
+    if(currentIndex === null) return;
+    const text = e.target.value;
 
-subs.push({
+    const enc = await encrypt(text);
+    notes[currentIndex].content = enc;
+    notes[currentIndex].title = text.split("\n")[0].slice(0,30);
 
-name,
-price,
-category,
-date
-
+    saveLocal();
+    render();
 });
 
+async function unlock(){
+    const pass = document.getElementById("password").value;
+    key = await getKey(pass);
 
+    loadLocal();
 
-save();
+    // decrypt all notes
+    for(let n of notes){
+        if(n.content?.data?.length){
+            try{
+                n._decrypted = await decrypt(n.content);
+            } catch(e){
+                n._decrypted = "[Decryption failed - wrong password]";
+            }
+        }
+    }
 
-display();
-
-
-
-// clear
-
-name="";
-price="";
-category="";
-date="";
-
-
-document.getElementById("name").value="";
-document.getElementById("price").value="";
-document.getElementById("date").value="";
-
-
+    render();
 }
 
+function lock(){
+    location.reload();
+}
 
-
-
-
-
-
-function display(){
-
-
-let list=document.getElementById("list");
-
-list.innerHTML="";
-
-
-let total=0;
-
-
-let search=
-document.getElementById("search")?.value.toLowerCase()
-||"";
-
-
-
-subs.filter(s=>
-
-s.name.toLowerCase().includes(search)
-
-)
-.forEach((s,i)=>{
-
-
-total+=s.price;
-
-
-
-list.innerHTML+=`
-
-<div class="row">
-
-
-<div>
-${s.name}
-</div>
-
-
-<div>
-${s.category}
-</div>
-
-
-<div>
-$${s.price}
-</div>
-
-
-<div>
-
-<span class="badge">
-Active
-</span>
-
-</div>
-
-
-<div>
-
-<button class="delete"
-onclick="remove(${i})">
-
-Delete
-
-</button>
-
-</div>
-
-
-</div>
-
-`;
-
-
-
+document.getElementById("password").addEventListener("keydown", (e)=>{
+    if(e.key === "Enter") unlock();
 });
-
-
-
-
-document.getElementById("total").innerText=
-total.toFixed(2);
-
-
-document.getElementById("year").innerText=
-(total*12).toFixed(2);
-
-
-document.getElementById("count").innerText=
-subs.length;
-
-
-document.getElementById("average").innerText=
-subs.length?(total/subs.length).toFixed(2):"0";
-
-
-showUpcoming();
-
-}
-
-
-
-
-
-
-function showUpcoming(){
-
-
-let box=document.getElementById("upcoming");
-
-box.innerHTML="";
-
-
-
-subs.slice(0,5).forEach(s=>{
-
-
-box.innerHTML+=`
-
-<div class="upcoming">
-
-<span>
-${s.name}
-</span>
-
-
-<span>
-${s.date}
-</span>
-
-
-</div>
-
-
-`;
-
-
-});
-
-
-}
-
-
-
-
-
-
-function remove(i){
-
-subs.splice(i,1);
-
-save();
-
-display();
-
-}
-
-
-
-
-
-function save(){
-
-localStorage.setItem(
-"subs",
-JSON.stringify(subs)
-);
-
-}
-
-
-
-
-function saveNotes(){
-
-localStorage.setItem(
-
-"notes",
-
-document.getElementById("notesBox").value
-
-);
-
-
-alert("Saved");
-
-}
-
-
-
-
-display();
-
-
 </script>
 
-
 </body>
-
 </html>
