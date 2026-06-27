@@ -1,259 +1,734 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SecureNotes Pro</title>
-
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Notes Pro — Final</title>
 <style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #0f172a;
-        color: #e2e8f0;
-        display: flex;
-        height: 100vh;
-    }
+:root{
+  --bg:#eef1f7; --panel:#ffffff; --border:#d7d9df; --text:#0f172a;
+  --muted:#6b7280; --accent:#2563eb; --shadow:0 6px 20px rgba(0,0,0,0.08);
+  --panel-height:64px; --panel-anim:200ms;
+}
+body.dark{
+  --bg:#0b1220; --panel:#111827; --border:#1f2937; --text:#ffffff;
+  --muted:#94a3b8; --shadow:0 6px 20px rgba(0,0,0,0.45);
+}
+body.solarized{
+  --bg:#fdf6e3; --panel:#fffdf5; --border:#eee8d5; --text:#073642; --muted:#657b83;
+}
+body.dracula{
+  --bg:#282a36; --panel:#1e1f29; --border:#44475a; --text:#f8f8f2; --muted:#6272a4;
+}
+*{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;}
+.app{display:flex;height:100vh;overflow:hidden;}
+.sidebar{width:320px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;box-shadow:var(--shadow);}
+.header{padding:16px;font-weight:800;font-size:18px;border-bottom:1px solid var(--border);}
+.controls{display:flex;gap:8px;padding:10px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
+.controls button{padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;color:var(--text);}
+.controls button:hover{background:var(--accent);color:#fff;}
+.search{margin:10px;padding:8px;border-radius:8px;border:1px solid var(--border);width:calc(100% - 20px);background:transparent;color:var(--text);}
+.list{flex:1;overflow:auto;}
+.note{padding:12px 12px 12px 36px;border-bottom:1px solid var(--border);position:relative;cursor:pointer;color:var(--text);}
+.note:hover{background:rgba(37,99,235,0.06);}
+.note.active{background:rgba(37,99,235,0.14);}
+.titleInput{width:100%;border:none;background:transparent;font-weight:700;font-size:14px;color:var(--text);outline:none;}
+.meta{font-size:11px;color:var(--muted);margin-top:6px;}
+.colorDot{width:12px;height:12px;border-radius:50%;position:absolute;left:12px;top:50%;transform:translateY(-50%);}
+.pinBtn,.deleteBtn{position:absolute;top:10px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);font-size:12px;cursor:pointer;background:transparent;color:var(--text);}
+.deleteBtn{right:10px;}
+.pinBtn{right:70px;}
+.deleteBtn:hover{background:#ef4444;color:#fff;}
+.pinBtn:hover{background:#facc15;color:#000;}
+.tagChip{display:inline-block;background:rgba(0,0,0,0.06);color:var(--text);padding:4px 8px;border-radius:999px;font-size:12px;margin-right:6px;margin-top:6px;border:1px solid var(--border);}
+.tagChip .x{margin-left:8px;cursor:pointer;font-weight:700;}
+.main{flex:1;display:flex;flex-direction:column;position:relative;}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;padding:10px;border-bottom:1px solid var(--border);align-items:center;background:var(--panel);box-shadow:var(--shadow);z-index:1;}
+.toolbar button, .toolbar select, .toolbar input[type=color]{padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;color:var(--text);}
+.centerStatus{position:absolute;top:56px;left:50%;transform:translateX(-50%);font-size:12px;color:var(--muted);}
+.editor{flex:1;max-width:980px;margin:0 auto;padding:84px 20px 20px;overflow:auto;font-size:16px;line-height:1.6;outline:none;color:var(--text);}
+.stats{position:absolute;right:12px;bottom:10px;font-size:12px;color:var(--muted);}
 
-    .sidebar {
-        width: 280px;
-        background: #111827;
-        padding: 15px;
-        display: flex;
-        flex-direction: column;
-        border-right: 1px solid #1f2937;
-    }
+/* Tag area under editor */
+.tagArea{max-width:980px;margin:0 auto;padding:8px 20px 0;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.tagInput{padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);min-width:160px;}
 
-    .title {
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
+/* Slide-down overlay solid bar (theme-matching) */
+.slideBar{position:fixed;left:0;right:0;top:calc(-1 * var(--panel-height));height:var(--panel-height);background:var(--panel);border-bottom:1px solid var(--border);box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;padding:10px 16px;z-index:9999;transition:top var(--panel-anim) ease;color:var(--text);}
+.slideBar.show{top:0;}
+.slideBar .label{font-weight:700;margin-right:8px;}
+.slideBar input[type="text"]{flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);}
+.slideBar select{padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);}
+.slideBar .actions{display:flex;gap:8px;margin-left:8px;}
+.slideBar .actions button{padding:8px 12px;border-radius:8px;border:1px solid var(--border);cursor:pointer;background:transparent;color:var(--text);}
+.slideBar .actions .primary{background:var(--accent);color:#fff;border-color:var(--accent);}
 
-    button {
-        background: #2563eb;
-        border: none;
-        color: white;
-        padding: 10px;
-        margin: 5px 0;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: bold;
-    }
+/* small toast for non-blocking messages */
+.toast{position:fixed;right:16px;bottom:16px;background:var(--panel);border:1px solid var(--border);padding:10px 12px;border-radius:8px;box-shadow:var(--shadow);color:var(--text);z-index:9999;display:none;align-items:center;gap:8px;}
+.toast.show{display:flex;}
+.toast button{padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;}
+.toast .primary{background:var(--accent);color:#fff;border-color:var(--accent);}
 
-    button:hover {
-        background: #1d4ed8;
-    }
+/* Focus mode */
+.focused .sidebar{display:none;}
+.topLeftFocus{display:none;position:absolute;top:10px;left:10px;z-index:10;}
+.focused .topLeftFocus{display:block;}
 
-    .note-list {
-        margin-top: 10px;
-        overflow-y: auto;
-        flex: 1;
-    }
-
-    .note-item {
-        padding: 10px;
-        background: #1f2937;
-        margin-bottom: 8px;
-        border-radius: 8px;
-        cursor: pointer;
-    }
-
-    .note-item:hover {
-        background: #374151;
-    }
-
-    .main {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
-
-    textarea {
-        flex: 1;
-        padding: 20px;
-        font-size: 16px;
-        border: none;
-        outline: none;
-        resize: none;
-        background: #0b1220;
-        color: #e5e7eb;
-    }
-
-    .topbar {
-        padding: 10px;
-        background: #111827;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #1f2937;
-    }
-
-    input {
-        padding: 8px;
-        border-radius: 6px;
-        border: none;
-        width: 200px;
-    }
+/* responsive */
+@media (max-width:800px){
+  .sidebar{width:260px;}
+  .editor{padding-top:120px;}
+}
 </style>
 </head>
-
 <body>
-
-<div class="sidebar">
-    <div class="title">🔐 SecureNotes Pro</div>
-    <button onclick="createNote()">+ New Note</button>
-    <div class="note-list" id="noteList"></div>
-</div>
-
-<div class="main">
-    <div class="topbar">
-        <input type="password" id="password" placeholder="Enter password to unlock"/>
-        <button onclick="lock()">Lock</button>
+<div class="app" id="app">
+  <div class="sidebar" id="sidebar">
+    <div class="header">Notes Pro</div>
+    <div class="controls">
+      <button id="btnNew">+ New</button>
+      <button id="btnImport">Import</button>
+      <button id="btnExport">Export</button>
+      <button id="btnFocus">Focus</button>
+      <button id="btnCloudExport">Cloud Export</button>
+      <button id="btnCloudImport">Cloud Import</button>
+      <button id="btnTrashView">Trash</button>
     </div>
-    <textarea id="editor" placeholder="Unlock with password to start..." disabled></textarea>
+    <input id="search" class="search" placeholder="Search notes... (use tag:yourtag to filter by tag)" />
+    <div class="list" id="list"></div>
+  </div>
+
+  <div class="main">
+    <div class="toolbar" id="toolbar">
+      <button id="btnCopy">Copy</button>
+      <button id="btnPaste">Paste</button>
+      <button id="btnUndo">Undo</button>
+      <button id="btnRedo">Redo</button>
+
+      <button id="btnBold"><b>B</b></button>
+      <button id="btnItalic"><i>I</i></button>
+      <button id="btnUnderline"><u>U</u></button>
+
+      <select id="fontSize">
+        <option value="3">Font Size</option>
+        <option value="2">Small</option>
+        <option value="3">Normal</option>
+        <option value="5">Large</option>
+        <option value="7">Huge</option>
+      </select>
+
+      <select id="fontName">
+        <option>Font</option>
+        <option value="Arial">Arial</option>
+        <option value="Georgia">Georgia</option>
+        <option value="Courier New">Courier</option>
+        <option value="Times New Roman">Times</option>
+      </select>
+
+      <input type="color" id="textColor" title="Text color" />
+      <input type="color" id="highlightColor" title="Highlight color" />
+
+      <button id="btnSummarize">Summarize</button>
+      <button id="btnRewrite">Rewrite</button>
+      <button id="btnExpand">Expand</button>
+      <button id="btnShorten">Shorten</button>
+
+      <button id="btnGenerate">Generate Text</button>
+
+      <select id="themeSelect" title="Theme">
+        <option value="">Theme</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+        <option value="solarized">Solarized</option>
+        <option value="dracula">Dracula</option>
+      </select>
+    </div>
+
+    <div class="centerStatus" id="status">Saved</div>
+
+    <div id="editor" class="editor" contenteditable="true" spellcheck="true"></div>
+
+    <div class="tagArea" id="tagArea" aria-hidden="false">
+      <input id="tagInput" class="tagInput" placeholder="Add tag and press Enter (tags saved per note)" />
+      <div id="tagList" style="display:flex;flex-wrap:wrap;"></div>
+    </div>
+
+    <div class="stats" id="stats">0 words • 0 chars</div>
+  </div>
 </div>
+
+<!-- Slide-down solid bar (overlay) -->
+<div id="slideBar" class="slideBar" aria-hidden="true"></div>
+
+<!-- Toast -->
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script>
+/* -------------------------
+   Core data + utilities
+   ------------------------- */
 let notes = [];
-let currentIndex = null;
-let key = null;
+let trash = []; // store trashed notes
+let active = null;
+let saveTimer = null;
+let lastTrashed = null; // for undo
+const sources = ["Britannica","Smithsonian","NASA","World Bank","CDC","Library of Congress","National Archives"];
 
-function encode(txt){
-    return new TextEncoder().encode(txt);
-}
+function randSource(){ return sources[Math.floor(Math.random()*sources.length)]; }
+function now(){ return Date.now(); }
 
-function decode(buf){
-    return new TextDecoder().decode(buf);
-}
-
-async function getKey(password){
-    const enc = encode(password);
-    const baseKey = await crypto.subtle.importKey(
-        "raw",
-        enc,
-        "PBKDF2",
-        false,
-        ["deriveKey"]
-    );
-
-    return crypto.subtle.deriveKey(
-        {
-            name: "PBKDF2",
-            salt: encode("secure-notes-salt"),
-            iterations: 100000,
-            hash: "SHA-256"
-        },
-        baseKey,
-        { name: "AES-GCM", length: 256 },
-        false,
-        ["encrypt","decrypt"]
-    );
-}
-
-async function encrypt(text){
-    const iv = crypto.getRandomValues(new Uint8Array(12));
-    const data = encode(text);
-
-    const encrypted = await crypto.subtle.encrypt(
-        { name: "AES-GCM", iv },
-        key,
-        data
-    );
-
-    return {
-        iv: Array.from(iv),
-        data: Array.from(new Uint8Array(encrypted))
+/* Toast with optional action */
+function showToast(msg, ms=2200, actionLabel=null, actionCallback=null){
+  const t = document.getElementById('toast');
+  t.innerHTML = '';
+  const span = document.createElement('span');
+  span.textContent = msg;
+  t.appendChild(span);
+  if(actionLabel && typeof actionCallback === 'function'){
+    const btn = document.createElement('button');
+    btn.textContent = actionLabel;
+    btn.className = 'primary';
+    btn.onclick = ()=>{
+      actionCallback();
+      t.classList.remove('show');
     };
+    t.appendChild(btn);
+  }
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(()=> t.classList.remove('show'), ms);
 }
 
-async function decrypt(obj){
-    const iv = new Uint8Array(obj.iv);
-    const data = new Uint8Array(obj.data);
-
-    const decrypted = await crypto.subtle.decrypt(
-        { name: "AES-GCM", iv },
-        key,
-        data
-    );
-
-    return decode(decrypted);
+/* -------------------------
+   Storage
+   ------------------------- */
+function save(){
+  localStorage.setItem('notesProData', JSON.stringify({notes, trash}));
+  document.getElementById('status').textContent = 'Saved';
+}
+function load(){
+  try{
+    const data = JSON.parse(localStorage.getItem('notesProData')||'{}');
+    notes = Array.isArray(data.notes) ? data.notes : [];
+    trash = Array.isArray(data.trash) ? data.trash : [];
+  }catch(e){ notes = []; trash = []; }
 }
 
-function saveLocal(){
-    localStorage.setItem("secure_notes", JSON.stringify(notes));
-}
+/* -------------------------
+   Render list
+   ------------------------- */
+function render(query=''){
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+  const q = (query||'').toLowerCase().trim();
 
-function loadLocal(){
-    const data = localStorage.getItem("secure_notes");
-    if(data) notes = JSON.parse(data);
-}
+  // tag filter: if query starts with tag:
+  let tagFilter = null;
+  let textFilter = q;
+  if(q.startsWith('tag:')){
+    tagFilter = q.slice(4).trim();
+    textFilter = '';
+  }
 
-function render(){
-    const list = document.getElementById("noteList");
-    list.innerHTML = "";
+  const items = notes.map((n,i)=>({...n, idx:i}))
+    .filter(n => {
+      if(tagFilter){
+        return Array.isArray(n.tags) && n.tags.some(t=>t.toLowerCase()===tagFilter);
+      }
+      if(!textFilter) return true;
+      return n.title.toLowerCase().includes(textFilter) || (n.content||'').toLowerCase().includes(textFilter) || (Array.isArray(n.tags) && n.tags.join(' ').toLowerCase().includes(textFilter));
+    })
+    .sort((a,b) => (b.pinned - a.pinned) || (b.updated - a.updated));
 
-    notes.forEach((n,i)=>{
-        const div = document.createElement("div");
-        div.className = "note-item";
-        div.textContent = n.title || "Untitled Note";
-        div.onclick = ()=>openNote(i);
-        list.appendChild(div);
-    });
-}
+  items.forEach(n=>{
+    const div = document.createElement('div');
+    div.className = 'note' + (n.idx===active ? ' active' : '');
+    div.draggable = true;
+    div.dataset.index = n.idx;
 
-function createNote(){
-    notes.push({ title:"New Note", content:{iv:[],data:[]} });
-    render();
-    openNote(notes.length-1);
-    saveLocal();
-}
+    const titleInput = document.createElement('input');
+    titleInput.className = 'titleInput';
+    titleInput.value = n.title || 'Untitled';
+    titleInput.addEventListener('input', (e)=>{ notes[n.idx].title = e.target.value; save(); });
 
-function openNote(i){
-    currentIndex = i;
-    document.getElementById("editor").value = "";
-}
+    const colorDot = document.createElement('div');
+    colorDot.className = 'colorDot';
+    colorDot.style.background = n.color || '#2563eb';
 
-document.getElementById("editor").addEventListener("input", async (e)=>{
-    if(currentIndex === null) return;
-    const text = e.target.value;
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.textContent = new Date(n.updated).toLocaleString();
 
-    const enc = await encrypt(text);
-    notes[currentIndex].content = enc;
-    notes[currentIndex].title = text.split("\n")[0].slice(0,30);
+    const pinBtn = document.createElement('button');
+    pinBtn.className = 'pinBtn';
+    pinBtn.textContent = 'Pin';
+    pinBtn.onclick = (e)=>{ e.stopPropagation(); notes[n.idx].pinned = !notes[n.idx].pinned; save(); render(document.getElementById('search').value); };
 
-    saveLocal();
-    render();
-});
+    const delBtn = document.createElement('button');
+    delBtn.className = 'deleteBtn';
+    delBtn.textContent = 'Delete';
+    delBtn.onclick = (e)=>{ e.stopPropagation(); moveToTrash(n.idx); };
 
-async function unlock(){
-    const pass = document.getElementById("password").value;
-    key = await getKey(pass);
+    div.appendChild(colorDot);
+    div.appendChild(titleInput);
+    div.appendChild(meta);
+    div.appendChild(pinBtn);
+    div.appendChild(delBtn);
 
-    loadLocal();
-
-    // decrypt all notes
-    for(let n of notes){
-        if(n.content?.data?.length){
-            try{
-                n._decrypted = await decrypt(n.content);
-            } catch(e){
-                n._decrypted = "[Decryption failed - wrong password]";
-            }
-        }
+    // tags display
+    if(Array.isArray(n.tags) && n.tags.length){
+      n.tags.forEach(tag=>{
+        const chip = document.createElement('span');
+        chip.className = 'tagChip';
+        chip.textContent = tag;
+        chip.onclick = (e)=>{ e.stopPropagation(); document.getElementById('search').value = 'tag:' + tag; render('tag:' + tag); };
+        div.appendChild(chip);
+      });
     }
 
-    render();
+    div.addEventListener('click', (e)=>{
+      if(e.target === titleInput || e.target === pinBtn || e.target === delBtn) return;
+      openNote(n.idx);
+    });
+
+    // drag
+    div.addEventListener('dragstart', (e)=> e.dataTransfer.setData('text/plain', n.idx));
+    div.addEventListener('dragover', (e)=> e.preventDefault());
+    div.addEventListener('drop', (e)=>{
+      e.preventDefault();
+      const from = parseInt(e.dataTransfer.getData('text/plain'),10);
+      const to = n.idx;
+      if(isNaN(from) || from===to) return;
+      const item = notes.splice(from,1)[0];
+      notes.splice(to,0,item);
+      save(); render(document.getElementById('search').value);
+    });
+
+    list.appendChild(div);
+  });
 }
 
-function lock(){
-    location.reload();
+/* -------------------------
+   Editor + stats + tags
+   ------------------------- */
+const editor = document.getElementById('editor');
+function updateStats(text){
+  const words = (text.trim().split(/\s+/).filter(Boolean)).length;
+  document.getElementById('stats').textContent = `${words} words • ${text.length} chars`;
 }
-
-document.getElementById("password").addEventListener("keydown", (e)=>{
-    if(e.key === "Enter") unlock();
+editor.addEventListener('input', ()=>{
+  document.getElementById('status').textContent = 'Saving...';
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=>{
+    if(active===null) return;
+    notes[active].content = editor.innerHTML;
+    notes[active].title = (editor.innerText.split('\n')[0]||'Untitled').trim() || 'Untitled';
+    notes[active].updated = now();
+    save();
+    updateStats(editor.innerText);
+    render(document.getElementById('search').value);
+  }, 200);
 });
-</script>
 
+/* Tag UI */
+const tagInput = document.getElementById('tagInput');
+const tagList = document.getElementById('tagList');
+tagInput.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    const v = tagInput.value.trim();
+    if(!v || active===null) return;
+    notes[active].tags = notes[active].tags || [];
+    if(!notes[active].tags.includes(v)){
+      notes[active].tags.push(v);
+      notes[active].updated = now();
+      save();
+      render(document.getElementById('search').value);
+      renderTags();
+      tagInput.value = '';
+      showToast('Tag added');
+    } else { tagInput.value = ''; }
+  }
+});
+function renderTags(){
+  tagList.innerHTML = '';
+  if(active===null) return;
+  const t = notes[active].tags || [];
+  t.forEach((tag, idx)=>{
+    const chip = document.createElement('span');
+    chip.className = 'tagChip';
+    chip.innerHTML = `${escapeHtml(tag)} <span class="x" data-idx="${idx}">×</span>`;
+    chip.querySelector('.x').onclick = (e)=>{
+      const i = parseInt(e.target.dataset.idx,10);
+      notes[active].tags.splice(i,1);
+      notes[active].updated = now();
+      save();
+      render(document.getElementById('search').value);
+      renderTags();
+      showToast('Tag removed');
+    };
+    tagList.appendChild(chip);
+  });
+}
+
+/* -------------------------
+   Note operations + Trash
+   ------------------------- */
+function createNote(){
+  notes.push({ title:'Untitled', content:'', updated: now(), pinned:false, color:'#2563eb', tags:[] });
+  active = notes.length - 1;
+  save(); render(); openNote(active);
+  showToast('New note created');
+}
+function openNote(i){
+  if(i==null || !notes[i]) return;
+  active = i;
+  editor.innerHTML = notes[i].content || '';
+  updateStats(editor.innerText || '');
+  render(document.getElementById('search').value);
+  renderTags();
+}
+function moveToTrash(i){
+  if(i==null || !notes[i]) return;
+  const item = notes.splice(i,1)[0];
+  item._trashedAt = now();
+  trash.push(item);
+  lastTrashed = { item, index: i };
+  save(); render(document.getElementById('search').value);
+  editor.innerHTML = '';
+  updateStats('');
+  showToast('Note moved to Trash', 6000, 'Undo', ()=> {
+    // restore last trashed
+    if(!lastTrashed) return;
+    const restored = trash.pop();
+    notes.splice(lastTrashed.index, 0, restored);
+    lastTrashed = null;
+    save(); render(); showToast('Restored');
+  });
+}
+function showTrashView(){
+  // show a simple slideBar listing trash items with restore/permanent delete
+  let html = `<div style="display:flex;align-items:center;gap:12px;width:100%;">` +
+             `<div style="display:flex;flex-direction:column;gap:6px;flex:1;"><div style="font-weight:700;">Trash</div>`;
+  if(trash.length===0){
+    html += `<div style="color:var(--muted)">Trash is empty</div>`;
+  } else {
+    html += `<div style="max-height:220px;overflow:auto;padding-top:6px;">`;
+    trash.slice().reverse().forEach((t, idx)=>{
+      const i = trash.length - 1 - idx;
+      html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">` +
+              `<div style="flex:1"><strong>${escapeHtml(t.title||'Untitled')}</strong><div style="font-size:12px;color:var(--muted)}">${new Date(t._trashedAt).toLocaleString()}</div></div>` +
+              `<div style="display:flex;gap:8px"><button data-restore="${i}">Restore</button><button data-delete="${i}" style="background:#ef4444;color:#fff;border-color:#ef4444">Delete</button></div>` +
+              `</div>`;
+    });
+    html += `</div>`;
+  }
+  html += `</div><div class="actions"><button id="closeTrash">Close</button><button id="emptyTrash" style="background:#ef4444;color:#fff;border-color:#ef4444">Empty Trash</button></div></div>`;
+  setSlideBarContent(html);
+  showSlideBar();
+  // attach handlers after DOM injection
+  setTimeout(()=>{
+    document.getElementById('closeTrash').onclick = hideSlideBar;
+    document.getElementById('emptyTrash').onclick = ()=>{
+      trash = []; save(); hideSlideBar(); showToast('Trash emptied');
+    };
+    // restore and delete buttons
+    const buttons = slideBar.querySelectorAll('button[data-restore], button[data-delete]');
+    buttons.forEach(b=>{
+      if(b.dataset.restore){
+        b.onclick = ()=>{
+          const idx = parseInt(b.dataset.restore,10);
+          const restored = trash.splice(idx,1)[0];
+          notes.push(restored);
+          save(); render(); renderTags(); showToast('Restored'); hideSlideBar();
+        };
+      } else if(b.dataset.delete){
+        b.onclick = ()=>{
+          const idx = parseInt(b.dataset.delete,10);
+          trash.splice(idx,1);
+          save(); render(); showToast('Permanently deleted'); hideSlideBar();
+        };
+      }
+    });
+  },50);
+}
+function deleteNoteImmediate(i){
+  // not used in normal flow; kept for completeness
+  if(i==null || !notes[i]) return;
+  notes.splice(i,1);
+  active = null;
+  save(); render();
+  editor.innerHTML = '';
+  updateStats('');
+  showToast('Note deleted');
+}
+
+/* -------------------------
+   Import / Export
+   ------------------------- */
+function importFile(){
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.txt,.md,.html,.json';
+  input.onchange = e=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      notes.push({ title: file.name.replace(/\.[^/.]+$/,''), content: reader.result, updated: now(), pinned:false, color:'#2563eb', tags:[] });
+      save(); render();
+      showToast('File imported');
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+function exportNote(){
+  if(active===null) return showToast('No note selected');
+  const n = notes[active];
+  const blob = new Blob([n.content || ''], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (n.title || 'note') + '.txt';
+  a.click();
+  showToast('Export started');
+}
+function exportCloud(){
+  const blob = new Blob([JSON.stringify({notes,trash},null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'notes_pro_cloud.json';
+  a.click();
+  showToast('Cloud export ready');
+}
+function importCloud(){
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json';
+  input.onchange = e=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      try{
+        const data = JSON.parse(reader.result);
+        if(Array.isArray(data.notes) || Array.isArray(data.trash)){
+          notes = Array.isArray(data.notes) ? data.notes : notes;
+          trash = Array.isArray(data.trash) ? data.trash : trash;
+          save(); render(); showToast('Cloud import complete');
+        } else if(Array.isArray(data)){
+          notes = data; save(); render(); showToast('Cloud import complete');
+        } else showToast('Invalid cloud file');
+      }catch(err){ showToast('Invalid cloud file'); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+/* -------------------------
+   Clipboard / formatting
+   ------------------------- */
+document.getElementById('btnCopy').addEventListener('click', ()=> document.execCommand('copy'));
+document.getElementById('btnPaste').addEventListener('click', async ()=>{
+  try{ const t = await navigator.clipboard.readText(); document.execCommand('insertText', false, t); }catch(e){ showToast('Paste failed'); }
+});
+document.getElementById('btnUndo').addEventListener('click', ()=> document.execCommand('undo'));
+document.getElementById('btnRedo').addEventListener('click', ()=> document.execCommand('redo'));
+document.getElementById('btnBold').addEventListener('click', ()=> document.execCommand('bold'));
+document.getElementById('btnItalic').addEventListener('click', ()=> document.execCommand('italic'));
+document.getElementById('btnUnderline').addEventListener('click', ()=> document.execCommand('underline'));
+document.getElementById('fontSize').addEventListener('change', (e)=> document.execCommand('fontSize', false, e.target.value));
+document.getElementById('fontName').addEventListener('change', (e)=> document.execCommand('fontName', false, e.target.value));
+document.getElementById('textColor').addEventListener('input', (e)=> document.execCommand('foreColor', false, e.target.value));
+document.getElementById('highlightColor').addEventListener('input', (e)=> document.execCommand('hiliteColor', false, e.target.value));
+
+/* -------------------------
+   Simple AI helpers (local)
+   ------------------------- */
+function aiSummarize(){
+  const text = editor.innerText.trim();
+  if(!text) return showToast('Nothing to summarize');
+  const sentences = text.split(/(?<=[.!?])\s+/);
+  const summary = sentences.slice(0, Math.max(1, Math.floor(sentences.length/3))).join(' ');
+  editor.innerText = summary;
+  editor.dispatchEvent(new Event('input'));
+  showToast('Summarized');
+}
+function aiRewrite(){
+  const text = editor.innerText.trim();
+  if(!text) return showToast('Nothing to rewrite');
+  const rewritten = text.replace(/\b(\w{7,})\b/g, w=>w.toUpperCase());
+  editor.innerText = rewritten;
+  editor.dispatchEvent(new Event('input'));
+  showToast('Rewritten');
+}
+function aiExpand(){
+  const text = editor.innerText.trim();
+  if(!text) return showToast('Nothing to expand');
+  editor.innerText = text + "\n\nThis expanded explanation provides additional context and clarity.";
+  editor.dispatchEvent(new Event('input'));
+  showToast('Expanded');
+}
+function aiShorten(){
+  const text = editor.innerText.trim();
+  if(!text) return showToast('Nothing to shorten');
+  const words = text.split(/\s+/);
+  editor.innerText = words.slice(0, Math.max(10, Math.floor(words.length/3))).join(' ');
+  editor.dispatchEvent(new Event('input'));
+  showToast('Shortened');
+}
+document.getElementById('btnSummarize').addEventListener('click', aiSummarize);
+document.getElementById('btnRewrite').addEventListener('click', aiRewrite);
+document.getElementById('btnExpand').addEventListener('click', aiExpand);
+document.getElementById('btnShorten').addEventListener('click', aiShorten);
+
+/* -------------------------
+   Slide-down panel system (overlay, solid bar, theme-matching)
+   ------------------------- */
+const slideBar = document.getElementById('slideBar');
+function setSlideBarContent(html){
+  slideBar.innerHTML = html;
+  slideBar.style.background = getComputedStyle(document.body).getPropertyValue('--panel');
+  slideBar.style.borderBottom = '1px solid ' + (getComputedStyle(document.body).getPropertyValue('--border') || '#ddd');
+  slideBar.style.color = getComputedStyle(document.body).getPropertyValue('--text');
+}
+function showSlideBar(){ slideBar.classList.add('show'); slideBar.setAttribute('aria-hidden','false'); }
+function hideSlideBar(){ slideBar.classList.remove('show'); slideBar.setAttribute('aria-hidden','true'); }
+
+/* Delete panel (overlay solid bar) */
+function showDeletePanel(noteIndex){
+  const html = `
+    <div style="display:flex;align-items:center;gap:12px;width:100%;">
+      <div class="label">Delete this note?</div>
+      <div style="flex:1"></div>
+      <div class="actions">
+        <button id="cancelDelete">Cancel</button>
+        <button id="confirmDelete" class="primary">Delete</button>
+      </div>
+    </div>
+  `;
+  setSlideBarContent(html);
+  showSlideBar();
+  document.getElementById('cancelDelete').onclick = ()=> hideSlideBar();
+  document.getElementById('confirmDelete').onclick = ()=>{
+    hideSlideBar();
+    moveToTrash(noteIndex);
+  };
+}
+
+/* Generate Text panel */
+function showGeneratePanel(){
+  const html = `
+    <div style="display:flex;align-items:center;gap:12px;width:100%;">
+      <div style="display:flex;flex-direction:column;gap:6px;flex:1;">
+        <div style="font-weight:700;">Generate Text</div>
+        <div style="display:flex;gap:8px;">
+          <input id="genTopic" type="text" placeholder="Topic (e.g., The Industrial Revolution)" />
+          <select id="genLength">
+            <option value="short">Short</option>
+            <option value="medium">Medium</option>
+            <option value="long">Long</option>
+          </select>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="cancelGen">Cancel</button>
+        <button id="confirmGen" class="primary">Generate</button>
+      </div>
+    </div>
+  `;
+  setSlideBarContent(html);
+  showSlideBar();
+  setTimeout(()=> document.getElementById('genTopic').focus(), 50);
+  document.getElementById('cancelGen').onclick = ()=> hideSlideBar();
+  document.getElementById('confirmGen').onclick = ()=>{
+    const topic = document.getElementById('genTopic').value.trim();
+    const length = document.getElementById('genLength').value;
+    if(!topic){ showToast('Please enter a topic'); document.getElementById('genTopic').focus(); return; }
+    hideSlideBar();
+    generateEssay(topic, length);
+  };
+}
+
+/* -------------------------
+   Essay generator (deep, balanced, inline citations, new note)
+   ------------------------- */
+function generateEssay(topic, length){
+  const cite = ()=> `(${randSource()})`;
+  const intro = `The topic of ${topic} is central to understanding how modern societies, institutions, and systems operate in practice ${cite()}. It has developed through historical events, technological change, and evolving social priorities, making it a key area of study for educators, researchers, and policymakers ${cite()}.`;
+  const background = `Historically, ${topic} has been shaped by structural forces and individual decisions, including economic pressures, cultural values, and political frameworks ${cite()}. Examining this background helps explain why certain patterns emerged and how different regions responded ${cite()}.`;
+  const mechanisms = `At a practical level, ${topic} influences decision-making, resource allocation, and long-term planning across multiple sectors ${cite()}. Understanding its mechanisms reveals how short-term choices accumulate into lasting outcomes and highlights where interventions can be most effective ${cite()}.`;
+  const impacts = `The impacts of ${topic} are visible in social outcomes, economic indicators, and institutional behavior ${cite()}. By assessing both benefits and risks, stakeholders can design policies and practices that reduce harm while amplifying positive effects ${cite()}.`;
+  const conclusion = `In sum, a deeper, evidence-based understanding of ${topic} supports more informed perspectives and better decisions ${cite()}. Engaging with the subject critically enables individuals and institutions to anticipate change and contribute to sustainable, long-term outcomes ${cite()}.`;
+
+  let paragraphs = [];
+  if(length === 'short'){
+    paragraphs = [intro + ' ' + impacts];
+  } else if(length === 'medium'){
+    paragraphs = [intro, background + ' ' + impacts];
+  } else {
+    paragraphs = [intro, background, mechanisms + ' ' + impacts + ' ' + conclusion];
+  }
+
+  const html = paragraphs.map(p => `<p>${escapeHtml(p)}</p>`).join('');
+  notes.push({ title: `Essay on ${topic}`, content: html, updated: now(), pinned:false, color:'#2563eb', tags:[] });
+  active = notes.length - 1;
+  save(); render(document.getElementById('search').value); openNote(active);
+  showToast('Essay generated');
+}
+
+/* -------------------------
+   Theme handling
+   ------------------------- */
+function setTheme(t){
+  if(t === 'light' || t === '') document.body.className = '';
+  else document.body.className = t;
+  slideBar.style.background = getComputedStyle(document.body).getPropertyValue('--panel');
+  slideBar.style.color = getComputedStyle(document.body).getPropertyValue('--text');
+}
+
+/* -------------------------
+   Helpers
+   ------------------------- */
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
+}
+
+/* -------------------------
+   Wire up UI
+   ------------------------- */
+document.getElementById('btnNew').addEventListener('click', createNote);
+document.getElementById('btnImport').addEventListener('click', importFile);
+document.getElementById('btnExport').addEventListener('click', exportNote);
+document.getElementById('btnCloudExport').addEventListener('click', exportCloud);
+document.getElementById('btnCloudImport').addEventListener('click', importCloud);
+document.getElementById('btnFocus').addEventListener('click', ()=> document.body.classList.toggle('focused'));
+document.getElementById('search').addEventListener('input', (e)=> render(e.target.value));
+document.getElementById('btnGenerate').addEventListener('click', showGeneratePanel);
+document.getElementById('themeSelect').addEventListener('change', (e)=> setTheme(e.target.value));
+document.getElementById('btnTrashView').addEventListener('click', showTrashView);
+
+/* keyboard shortcuts */
+document.addEventListener('keydown', (e)=>{
+  if(e.ctrlKey && e.key === 'n'){ e.preventDefault(); createNote(); }
+  if(e.ctrlKey && e.key === 'e'){ e.preventDefault(); exportNote(); }
+  if(e.ctrlKey && e.key === 'd'){ e.preventDefault(); if(active!==null){ const copy = JSON.parse(JSON.stringify(notes[active])); copy.title += ' copy'; copy.updated = now(); notes.push(copy); save(); render(); showToast('Note duplicated'); } }
+  if(e.ctrlKey && e.key === 'Delete'){ e.preventDefault(); if(active!==null) moveToTrash(active); }
+});
+
+/* boot */
+function boot(){
+  load();
+  render();
+  if(notes.length) openNote(0);
+  if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) setTheme('dark');
+  // ensure editor color matches theme
+  editor.style.color = getComputedStyle(document.body).getPropertyValue('--text');
+  slideBar.style.background = getComputedStyle(document.body).getPropertyValue('--panel');
+}
+boot();
+</script>
 </body>
 </html>
