@@ -1,71 +1,177 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="description" content="Notes - A simple and secure online notes app.">
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Notes Pro</title>
+<meta name="description" content="Notes - A simple and secure online notes app.">
+<title>Notes</title>
+
+<!-- AdSense (correct placement in head) -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7085085116387086"
+     crossorigin="anonymous"></script>
+
 <style>
 :root{
-  --bg:#eef1f7; --panel:#ffffff; --border:#d7d9df; --text:#0f172a;
-  --muted:#6b7280; --accent:#2563eb; --shadow:0 6px 20px rgba(0,0,0,0.08);
-  --panel-height:64px; --panel-anim:200ms;
+  --bg:#eef1f7;
+  --panel:#ffffff;
+  --border:#d7d9df;
+  --text:#0f172a;
+  --muted:#6b7280;
+  --accent:#2563eb;
+  --shadow:0 6px 20px rgba(0,0,0,0.08);
+  --panel-height:64px;
+  --panel-anim:200ms;
+  --radius:10px;
+  --gap:10px;
+  --toolbar-height:64px;
+  --max-width:980px;
 }
 body.dark{
-  --bg:#0b1220; --panel:#111827; --border:#1f2937; --text:#ffffff;
-  --muted:#94a3b8; --shadow:0 6px 20px rgba(0,0,0,0.45);
+  --bg:#0b1220;
+  --panel:#111827;
+  --border:#1f2937;
+  --text:#ffffff;
+  --muted:#94a3b8;
+  --accent:#60a5fa;
+  --shadow:0 6px 20px rgba(0,0,0,0.45);
 }
 body.solarized{
-  --bg:#fdf6e3; --panel:#fffdf5; --border:#eee8d5; --text:#073642; --muted:#657b83;
+  --bg:#fdf6e3;
+  --panel:#fffdf5;
+  --border:#eee8d5;
+  --text:#073642;
+  --muted:#657b83;
+  --accent:#268bd2;
 }
 body.dracula{
-  --bg:#282a36; --panel:#1e1f29; --border:#44475a; --text:#f8f8f2; --muted:#6272a4;
+  --bg:#282a36;
+  --panel:#1e1f29;
+  --border:#44475a;
+  --text:#f8f8f2;
+  --muted:#6272a4;
+  --accent:#bd93f9;
 }
+
 *{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
 html,body{height:100%;margin:0;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;}
-.app{display:flex;height:100vh;overflow:hidden;}
-.sidebar{width:320px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;box-shadow:var(--shadow);}
-.header{padding:16px;font-weight:800;font-size:18px;border-bottom:1px solid var(--border);}
+body{overflow:hidden;}
+
+.app{display:flex;height:100vh;overflow:hidden;position:relative;}
+
+/* Sidebar + drawer */
+.sidebar{
+  width:320px;
+  background:var(--panel);
+  border-right:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+  box-shadow:var(--shadow);
+  z-index:3;
+}
+.header{padding:16px;font-weight:800;font-size:18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.brandSmall{font-size:12px;color:var(--muted);font-weight:600;}
 .controls{display:flex;gap:8px;padding:10px;border-bottom:1px solid var(--border);flex-wrap:wrap;}
-.controls button{padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;color:var(--text);}
+.controls button{padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;color:var(--text);font-weight:600;}
 .controls button:hover{background:var(--accent);color:#fff;}
-.search{margin:10px;padding:8px;border-radius:8px;border:1px solid var(--border);width:calc(100% - 20px);background:transparent;color:var(--text);}
-.list{flex:1;overflow:auto;}
-.note{padding:12px 12px 12px 36px;border-bottom:1px solid var(--border);position:relative;cursor:pointer;color:var(--text);}
-.note:hover{background:rgba(37,99,235,0.06);}
-.note.active{background:rgba(37,99,235,0.14);}
+.search{margin:10px;padding:8px;border-radius:8px;border:1px solid var(--border);width:calc(100% - 20px);background:transparent;color:var(--text);outline:none;}
+.list{flex:1;overflow:auto;padding-bottom:12px;}
+.note{padding:12px 12px 12px 36px;border-bottom:1px solid var(--border);position:relative;cursor:pointer;color:var(--text);display:flex;flex-direction:column;gap:6px;}
+.note:hover{background:rgba(37,99,235,0.04);}
+.note.active{background:rgba(37,99,235,0.10);}
 .titleInput{width:100%;border:none;background:transparent;font-weight:700;font-size:14px;color:var(--text);outline:none;}
-.meta{font-size:11px;color:var(--muted);margin-top:6px;}
-.colorDot{width:12px;height:12px;border-radius:50%;position:absolute;left:12px;top:50%;transform:translateY(-50%);}
+.meta{font-size:11px;color:var(--muted);}
+.colorDot{width:12px;height:12px;border-radius:50%;position:absolute;left:12px;top:18px;}
 .pinBtn,.deleteBtn{position:absolute;top:10px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);font-size:12px;cursor:pointer;background:transparent;color:var(--text);}
 .deleteBtn{right:10px;}
 .pinBtn{right:70px;}
 .deleteBtn:hover{background:#ef4444;color:#fff;}
 .pinBtn:hover{background:#facc15;color:#000;}
-.tagChip{display:inline-block;background:rgba(0,0,0,0.06);color:var(--text);padding:4px 8px;border-radius:999px;font-size:12px;margin-right:6px;margin-top:6px;border:1px solid var(--border);}
-.tagChip .x{margin-left:8px;cursor:pointer;font-weight:700;}
+.tagChip{display:inline-block;background:rgba(0,0,0,0.06);color:var(--text);padding:4px 8px;border-radius:999px;font-size:12px;margin-right:6px;margin-top:6px;border:1px solid var(--border);cursor:pointer;}
+
+/* Drawer overlay for mobile */
+.drawer-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.35);
+  z-index:2;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity var(--panel-anim) ease;
+}
+.drawer-open .drawer-overlay{
+  opacity:1;
+  pointer-events:auto;
+}
+.drawer-open .sidebar{
+  transform:translateX(0);
+}
+.sidebar{
+  transition:transform var(--panel-anim) ease;
+}
+@media (max-width:900px){
+  .sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    transform:translateX(-100%);
+  }
+}
+
+/* Main area */
 .main{flex:1;display:flex;flex-direction:column;position:relative;}
-.toolbar{display:flex;flex-wrap:wrap;gap:8px;padding:10px;border-bottom:1px solid var(--border);align-items:center;background:var(--panel);box-shadow:var(--shadow);z-index:1;}
-.toolbar button, .toolbar select, .toolbar input[type=color]{padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;color:var(--text);}
+
+/* Toolbar */
+.toolbar{
+  display:flex;
+  flex-wrap:nowrap;
+  gap:8px;
+  padding:10px;
+  border-bottom:1px solid var(--border);
+  align-items:center;
+  background:var(--panel);
+  box-shadow:var(--shadow);
+  z-index:2;
+  min-height:var(--toolbar-height);
+  overflow-x:auto;
+}
+.toolbar::-webkit-scrollbar{height:6px;}
+.toolbar::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.2);border-radius:999px;}
+.toolbar .group{display:flex;gap:8px;align-items:center;flex-shrink:0;}
+.toolbar button{padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer;color:var(--text);font-weight:600;white-space:nowrap;}
+.toolbar button:hover{background:rgba(0,0,0,0.04);}
+.toolbar button.icon-btn{width:40px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+
 .centerStatus{position:absolute;top:56px;left:50%;transform:translateX(-50%);font-size:12px;color:var(--muted);}
-.editor{flex:1;max-width:980px;margin:0 auto;padding:84px 20px 20px;overflow:auto;font-size:16px;line-height:1.6;outline:none;color:var(--text);}
+.editor{flex:1;max-width:var(--max-width);margin:0 auto;padding:84px 20px 20px;overflow:auto;font-size:16px;line-height:1.6;outline:none;color:var(--text);background:transparent;}
 .stats{position:absolute;right:12px;bottom:10px;font-size:12px;color:var(--muted);}
 
-/* Tag area under editor */
-.tagArea{max-width:980px;margin:0 auto;padding:8px 20px 0;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
-.tagInput{padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);min-width:160px;}
+/* Tag area */
+.tagArea{max-width:var(--max-width);margin:0 auto;padding:8px 20px 0;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.tagInput{padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);min-width:160px;outline:none;}
 
-/* Slide-down overlay solid bar (theme-matching) */
+/* Custom select */
+.custom-select{position:relative;min-width:120px;flex-shrink:0;}
+.custom-select .select-btn{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--panel);color:var(--text);cursor:pointer;min-width:120px;white-space:nowrap;}
+.custom-select .select-btn:focus{outline:2px solid rgba(37,99,235,0.18);}
+.custom-select .options{position:absolute;left:0;right:0;top:calc(100% + 8px);background:var(--panel);border:1px solid var(--border);box-shadow:var(--shadow);border-radius:8px;max-height:220px;overflow:auto;z-index:9999;display:none;}
+.custom-select.open .options{display:block;}
+.custom-select .option{padding:8px 10px;cursor:pointer;color:var(--text);border-bottom:1px solid rgba(0,0,0,0.03);}
+.custom-select .option:last-child{border-bottom:none;}
+.custom-select .option:hover{background:rgba(37,99,235,0.06);}
+
+/* Slide bar */
 .slideBar{position:fixed;left:0;right:0;top:calc(-1 * var(--panel-height));height:var(--panel-height);background:var(--panel);border-bottom:1px solid var(--border);box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;padding:10px 16px;z-index:9999;transition:top var(--panel-anim) ease;color:var(--text);}
 .slideBar.show{top:0;}
 .slideBar .label{font-weight:700;margin-right:8px;}
-.slideBar input[type="text"]{flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);}
-.slideBar select{padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);}
+.slideBar input[type="text"]{flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);outline:none;}
+.slideBar select{padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);outline:none;}
 .slideBar .actions{display:flex;gap:8px;margin-left:8px;}
 .slideBar .actions button{padding:8px 12px;border-radius:8px;border:1px solid var(--border);cursor:pointer;background:transparent;color:var(--text);}
 .slideBar .actions .primary{background:var(--accent);color:#fff;border-color:var(--accent);}
 
-/* small toast for non-blocking messages */
+/* Toast */
 .toast{position:fixed;right:16px;bottom:16px;background:var(--panel);border:1px solid var(--border);padding:10px 12px;border-radius:8px;box-shadow:var(--shadow);color:var(--text);z-index:9999;display:none;align-items:center;gap:8px;}
 .toast.show{display:flex;}
 .toast button{padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;}
@@ -76,17 +182,24 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--text);-webkit-fo
 .topLeftFocus{display:none;position:absolute;top:10px;left:10px;z-index:10;}
 .focused .topLeftFocus{display:block;}
 
-/* responsive */
-@media (max-width:800px){
-  .sidebar{width:260px;}
-  .editor{padding-top:120px;}
+/* Mobile tweaks */
+@media (max-width:900px){
+  body{overflow:hidden;}
+  .editor{padding-top:96px;}
+  .stats{right:8px;bottom:8px;}
 }
 </style>
 </head>
 <body>
+<div class="drawer-overlay" id="drawerOverlay"></div>
+
 <div class="app" id="app">
   <div class="sidebar" id="sidebar">
-    <div class="header">Notes Pro</div>
+    <div class="header">
+      <div>Online Notes</div>
+      <div class="brandSmall">— Notes Pro</div>
+    </div>
+
     <div class="controls">
       <button id="btnNew">+ New</button>
       <button id="btnImport">Import</button>
@@ -96,59 +209,86 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--text);-webkit-fo
       <button id="btnCloudImport">Cloud Import</button>
       <button id="btnTrashView">Trash</button>
     </div>
+
     <input id="search" class="search" placeholder="Search notes... (use tag:yourtag to filter by tag)" />
+
     <div class="list" id="list"></div>
   </div>
 
   <div class="main">
     <div class="toolbar" id="toolbar">
-      <button id="btnCopy">Copy</button>
-      <button id="btnPaste">Paste</button>
-      <button id="btnUndo">Undo</button>
-      <button id="btnRedo">Redo</button>
+      <!-- Hamburger (far left) -->
+      <div class="group">
+        <button id="btnMenu" class="icon-btn" aria-label="Toggle sidebar">☰</button>
+      </div>
 
-      <button id="btnBold"><b>B</b></button>
-      <button id="btnItalic"><i>I</i></button>
-      <button id="btnUnderline"><u>U</u></button>
+      <div class="group">
+        <button id="btnCopy">Copy</button>
+        <button id="btnPaste">Paste</button>
+        <button id="btnUndo">Undo</button>
+        <button id="btnRedo">Redo</button>
+      </div>
 
-      <select id="fontSize">
-        <option value="3">Font Size</option>
-        <option value="2">Small</option>
-        <option value="3">Normal</option>
-        <option value="5">Large</option>
-        <option value="7">Huge</option>
-      </select>
+      <div class="group">
+        <button id="btnBold"><b>B</b></button>
+        <button id="btnItalic"><i>I</i></button>
+        <button id="btnUnderline"><u>U</u></button>
+      </div>
 
-      <select id="fontName">
-        <option>Font</option>
-        <option value="Arial">Arial</option>
-        <option value="Georgia">Georgia</option>
-        <option value="Courier New">Courier</option>
-        <option value="Times New Roman">Times</option>
-      </select>
+      <div class="group">
+        <div class="custom-select" id="selFontSize">
+          <div class="select-btn" tabindex="0"><span id="selFontSizeLabel">Font Size</span><span>▾</span></div>
+          <div class="options">
+            <div class="option" data-value="2">Small</div>
+            <div class="option" data-value="3">Normal</div>
+            <div class="option" data-value="5">Large</div>
+            <div class="option" data-value="7">Huge</div>
+          </div>
+        </div>
 
-      <input type="color" id="textColor" title="Text color" />
-      <input type="color" id="highlightColor" title="Highlight color" />
+        <div class="custom-select" id="selFontName">
+          <div class="select-btn" tabindex="0"><span id="selFontNameLabel">Font</span><span>▾</span></div>
+          <div class="options">
+            <div class="option" data-value="Arial">Arial</div>
+            <div class="option" data-value="Georgia">Georgia</div>
+            <div class="option" data-value="Courier New">Courier</div>
+            <div class="option" data-value="Times New Roman">Times</div>
+          </div>
+        </div>
+      </div>
 
-      <button id="btnSummarize">Summarize</button>
-      <button id="btnRewrite">Rewrite</button>
-      <button id="btnExpand">Expand</button>
-      <button id="btnShorten">Shorten</button>
+      <div class="group">
+        <input type="color" id="textColor" title="Text color" />
+        <input type="color" id="highlightColor" title="Highlight color" />
+      </div>
 
-      <button id="btnGenerate">Generate Text</button>
+      <div class="group">
+        <button id="btnSummarize">Summarize</button>
+        <button id="btnRewrite">Rewrite</button>
+        <button id="btnExpand">Expand</button>
+        <button id="btnShorten">Shorten</button>
+      </div>
 
-      <select id="themeSelect" title="Theme">
-        <option value="">Theme</option>
-        <option value="light">Light</option>
-        <option value="dark">Dark</option>
-        <option value="solarized">Solarized</option>
-        <option value="dracula">Dracula</option>
-      </select>
+      <div class="group">
+        <button id="btnGenerate">Generate Text</button>
+      </div>
+
+      <div class="group" style="margin-left:auto;">
+        <div class="custom-select" id="selTheme">
+          <div class="select-btn" tabindex="0"><span id="selThemeLabel">Theme</span><span>▾</span></div>
+          <div class="options">
+            <div class="option" data-value="">Light</div>
+            <div class="option" data-value="dark">Dark</div>
+            <div class="option" data-value="solarized">Solarized</div>
+            <div class="option" data-value="dracula">Dracula</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="centerStatus" id="status">Saved</div>
 
-    <div id="editor" class="editor" contenteditable="true" spellcheck="true"></div>
+    <div id="editor" class="editor" contenteditable="true" spellcheck="true" aria-label="Note editor"></div>
 
     <div class="tagArea" id="tagArea" aria-hidden="false">
       <input id="tagInput" class="tagInput" placeholder="Add tag and press Enter (tags saved per note)" />
@@ -159,27 +299,19 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--text);-webkit-fo
   </div>
 </div>
 
-<!-- Slide-down solid bar (overlay) -->
 <div id="slideBar" class="slideBar" aria-hidden="true"></div>
-
-<!-- Toast -->
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script>
-/* -------------------------
-   Core data + utilities
-   ------------------------- */
 let notes = [];
-let trash = []; // store trashed notes
+let trash = [];
 let active = null;
 let saveTimer = null;
-let lastTrashed = null; // for undo
+let lastTrashed = null;
 const sources = ["Britannica","Smithsonian","NASA","World Bank","CDC","Library of Congress","National Archives"];
-
 function randSource(){ return sources[Math.floor(Math.random()*sources.length)]; }
 function now(){ return Date.now(); }
 
-/* Toast with optional action */
 function showToast(msg, ms=2200, actionLabel=null, actionCallback=null){
   const t = document.getElementById('toast');
   t.innerHTML = '';
@@ -201,9 +333,6 @@ function showToast(msg, ms=2200, actionLabel=null, actionCallback=null){
   t._t = setTimeout(()=> t.classList.remove('show'), ms);
 }
 
-/* -------------------------
-   Storage
-   ------------------------- */
 function save(){
   localStorage.setItem('notesProData', JSON.stringify({notes, trash}));
   document.getElementById('status').textContent = 'Saved';
@@ -216,68 +345,55 @@ function load(){
   }catch(e){ notes = []; trash = []; }
 }
 
-/* -------------------------
-   Render list
-   ------------------------- */
 function render(query=''){
   const list = document.getElementById('list');
   list.innerHTML = '';
   const q = (query||'').toLowerCase().trim();
-
-  // tag filter: if query starts with tag:
   let tagFilter = null;
   let textFilter = q;
   if(q.startsWith('tag:')){
     tagFilter = q.slice(4).trim();
     textFilter = '';
   }
-
   const items = notes.map((n,i)=>({...n, idx:i}))
     .filter(n => {
       if(tagFilter){
         return Array.isArray(n.tags) && n.tags.some(t=>t.toLowerCase()===tagFilter);
       }
       if(!textFilter) return true;
-      return n.title.toLowerCase().includes(textFilter) || (n.content||'').toLowerCase().includes(textFilter) || (Array.isArray(n.tags) && n.tags.join(' ').toLowerCase().includes(textFilter));
+      return n.title.toLowerCase().includes(textFilter) ||
+             (n.content||'').toLowerCase().includes(textFilter) ||
+             (Array.isArray(n.tags) && n.tags.join(' ').toLowerCase().includes(textFilter));
     })
     .sort((a,b) => (b.pinned - a.pinned) || (b.updated - a.updated));
-
   items.forEach(n=>{
     const div = document.createElement('div');
     div.className = 'note' + (n.idx===active ? ' active' : '');
     div.draggable = true;
     div.dataset.index = n.idx;
-
     const titleInput = document.createElement('input');
     titleInput.className = 'titleInput';
     titleInput.value = n.title || 'Untitled';
     titleInput.addEventListener('input', (e)=>{ notes[n.idx].title = e.target.value; save(); });
-
     const colorDot = document.createElement('div');
     colorDot.className = 'colorDot';
     colorDot.style.background = n.color || '#2563eb';
-
     const meta = document.createElement('div');
     meta.className = 'meta';
     meta.textContent = new Date(n.updated).toLocaleString();
-
     const pinBtn = document.createElement('button');
     pinBtn.className = 'pinBtn';
     pinBtn.textContent = 'Pin';
     pinBtn.onclick = (e)=>{ e.stopPropagation(); notes[n.idx].pinned = !notes[n.idx].pinned; save(); render(document.getElementById('search').value); };
-
     const delBtn = document.createElement('button');
     delBtn.className = 'deleteBtn';
     delBtn.textContent = 'Delete';
     delBtn.onclick = (e)=>{ e.stopPropagation(); moveToTrash(n.idx); };
-
     div.appendChild(colorDot);
     div.appendChild(titleInput);
     div.appendChild(meta);
     div.appendChild(pinBtn);
     div.appendChild(delBtn);
-
-    // tags display
     if(Array.isArray(n.tags) && n.tags.length){
       n.tags.forEach(tag=>{
         const chip = document.createElement('span');
@@ -287,13 +403,10 @@ function render(query=''){
         div.appendChild(chip);
       });
     }
-
     div.addEventListener('click', (e)=>{
       if(e.target === titleInput || e.target === pinBtn || e.target === delBtn) return;
       openNote(n.idx);
     });
-
-    // drag
     div.addEventListener('dragstart', (e)=> e.dataTransfer.setData('text/plain', n.idx));
     div.addEventListener('dragover', (e)=> e.preventDefault());
     div.addEventListener('drop', (e)=>{
@@ -305,14 +418,10 @@ function render(query=''){
       notes.splice(to,0,item);
       save(); render(document.getElementById('search').value);
     });
-
     list.appendChild(div);
   });
 }
 
-/* -------------------------
-   Editor + stats + tags
-   ------------------------- */
 const editor = document.getElementById('editor');
 function updateStats(text){
   const words = (text.trim().split(/\s+/).filter(Boolean)).length;
@@ -332,7 +441,6 @@ editor.addEventListener('input', ()=>{
   }, 200);
 });
 
-/* Tag UI */
 const tagInput = document.getElementById('tagInput');
 const tagList = document.getElementById('tagList');
 tagInput.addEventListener('keydown', (e)=>{
@@ -373,9 +481,6 @@ function renderTags(){
   });
 }
 
-/* -------------------------
-   Note operations + Trash
-   ------------------------- */
 function createNote(){
   notes.push({ title:'Untitled', content:'', updated: now(), pinned:false, color:'#2563eb', tags:[] });
   active = notes.length - 1;
@@ -400,7 +505,6 @@ function moveToTrash(i){
   editor.innerHTML = '';
   updateStats('');
   showToast('Note moved to Trash', 6000, 'Undo', ()=> {
-    // restore last trashed
     if(!lastTrashed) return;
     const restored = trash.pop();
     notes.splice(lastTrashed.index, 0, restored);
@@ -408,8 +512,17 @@ function moveToTrash(i){
     save(); render(); showToast('Restored');
   });
 }
+const slideBar = document.getElementById('slideBar');
+function setSlideBarContent(html){
+  slideBar.innerHTML = html;
+  slideBar.style.background = getComputedStyle(document.body).getPropertyValue('--panel');
+  slideBar.style.borderBottom = '1px solid ' + (getComputedStyle(document.body).getPropertyValue('--border') || '#ddd');
+  slideBar.style.color = getComputedStyle(document.body).getPropertyValue('--text');
+}
+function showSlideBar(){ slideBar.classList.add('show'); slideBar.setAttribute('aria-hidden','false'); }
+function hideSlideBar(){ slideBar.classList.remove('show'); slideBar.setAttribute('aria-hidden','true'); }
+
 function showTrashView(){
-  // show a simple slideBar listing trash items with restore/permanent delete
   let html = `<div style="display:flex;align-items:center;gap:12px;width:100%;">` +
              `<div style="display:flex;flex-direction:column;gap:6px;flex:1;"><div style="font-weight:700;">Trash</div>`;
   if(trash.length===0){
@@ -428,13 +541,11 @@ function showTrashView(){
   html += `</div><div class="actions"><button id="closeTrash">Close</button><button id="emptyTrash" style="background:#ef4444;color:#fff;border-color:#ef4444">Empty Trash</button></div></div>`;
   setSlideBarContent(html);
   showSlideBar();
-  // attach handlers after DOM injection
   setTimeout(()=>{
     document.getElementById('closeTrash').onclick = hideSlideBar;
     document.getElementById('emptyTrash').onclick = ()=>{
       trash = []; save(); hideSlideBar(); showToast('Trash emptied');
     };
-    // restore and delete buttons
     const buttons = slideBar.querySelectorAll('button[data-restore], button[data-delete]');
     buttons.forEach(b=>{
       if(b.dataset.restore){
@@ -454,20 +565,7 @@ function showTrashView(){
     });
   },50);
 }
-function deleteNoteImmediate(i){
-  // not used in normal flow; kept for completeness
-  if(i==null || !notes[i]) return;
-  notes.splice(i,1);
-  active = null;
-  save(); render();
-  editor.innerHTML = '';
-  updateStats('');
-  showToast('Note deleted');
-}
 
-/* -------------------------
-   Import / Export
-   ------------------------- */
 function importFile(){
   const input = document.createElement('input');
   input.type = 'file';
@@ -528,9 +626,6 @@ function importCloud(){
   input.click();
 }
 
-/* -------------------------
-   Clipboard / formatting
-   ------------------------- */
 document.getElementById('btnCopy').addEventListener('click', ()=> document.execCommand('copy'));
 document.getElementById('btnPaste').addEventListener('click', async ()=>{
   try{ const t = await navigator.clipboard.readText(); document.execCommand('insertText', false, t); }catch(e){ showToast('Paste failed'); }
@@ -540,14 +635,13 @@ document.getElementById('btnRedo').addEventListener('click', ()=> document.execC
 document.getElementById('btnBold').addEventListener('click', ()=> document.execCommand('bold'));
 document.getElementById('btnItalic').addEventListener('click', ()=> document.execCommand('italic'));
 document.getElementById('btnUnderline').addEventListener('click', ()=> document.execCommand('underline'));
-document.getElementById('fontSize').addEventListener('change', (e)=> document.execCommand('fontSize', false, e.target.value));
-document.getElementById('fontName').addEventListener('change', (e)=> document.execCommand('fontName', false, e.target.value));
+
+function applyFontSize(size){ document.execCommand('fontSize', false, size); }
+function applyFontName(name){ document.execCommand('fontName', false, name); }
+
 document.getElementById('textColor').addEventListener('input', (e)=> document.execCommand('foreColor', false, e.target.value));
 document.getElementById('highlightColor').addEventListener('input', (e)=> document.execCommand('hiliteColor', false, e.target.value));
 
-/* -------------------------
-   Simple AI helpers (local)
-   ------------------------- */
 function aiSummarize(){
   const text = editor.innerText.trim();
   if(!text) return showToast('Nothing to summarize');
@@ -560,7 +654,10 @@ function aiSummarize(){
 function aiRewrite(){
   const text = editor.innerText.trim();
   if(!text) return showToast('Nothing to rewrite');
-  const rewritten = text.replace(/\b(\w{7,})\b/g, w=>w.toUpperCase());
+  const rewritten = text.replace(/\b(can't|won't|don't|it's|i'm|i've|we're)\b/gi, function(m){
+    const map = {"can't":"cannot","won't":"will not","don't":"do not","it's":"it is","i'm":"I am","i've":"I have","we're":"we are"};
+    return map[m.toLowerCase()] || m;
+  }).replace(/(^\s*\w|[.!?]\s*\w)/g, s => s.toUpperCase());
   editor.innerText = rewritten;
   editor.dispatchEvent(new Event('input'));
   showToast('Rewritten');
@@ -568,15 +665,17 @@ function aiRewrite(){
 function aiExpand(){
   const text = editor.innerText.trim();
   if(!text) return showToast('Nothing to expand');
-  editor.innerText = text + "\n\nThis expanded explanation provides additional context and clarity.";
+  const expansion = "\n\nTo expand on this topic, consider how its principles apply in real-world scenarios, including practical examples and long-term implications for decision-making and outcomes.";
+  editor.innerText = text + expansion;
   editor.dispatchEvent(new Event('input'));
   showToast('Expanded');
 }
 function aiShorten(){
   const text = editor.innerText.trim();
   if(!text) return showToast('Nothing to shorten');
-  const words = text.split(/\s+/);
-  editor.innerText = words.slice(0, Math.max(10, Math.floor(words.length/3))).join(' ');
+  const sentences = text.split(/(?<=[.!?])\s+/);
+  const keep = sentences.slice(0, Math.max(1, Math.floor(sentences.length/3))).join(' ');
+  editor.innerText = keep;
   editor.dispatchEvent(new Event('input'));
   showToast('Shortened');
 }
@@ -585,41 +684,6 @@ document.getElementById('btnRewrite').addEventListener('click', aiRewrite);
 document.getElementById('btnExpand').addEventListener('click', aiExpand);
 document.getElementById('btnShorten').addEventListener('click', aiShorten);
 
-/* -------------------------
-   Slide-down panel system (overlay, solid bar, theme-matching)
-   ------------------------- */
-const slideBar = document.getElementById('slideBar');
-function setSlideBarContent(html){
-  slideBar.innerHTML = html;
-  slideBar.style.background = getComputedStyle(document.body).getPropertyValue('--panel');
-  slideBar.style.borderBottom = '1px solid ' + (getComputedStyle(document.body).getPropertyValue('--border') || '#ddd');
-  slideBar.style.color = getComputedStyle(document.body).getPropertyValue('--text');
-}
-function showSlideBar(){ slideBar.classList.add('show'); slideBar.setAttribute('aria-hidden','false'); }
-function hideSlideBar(){ slideBar.classList.remove('show'); slideBar.setAttribute('aria-hidden','true'); }
-
-/* Delete panel (overlay solid bar) */
-function showDeletePanel(noteIndex){
-  const html = `
-    <div style="display:flex;align-items:center;gap:12px;width:100%;">
-      <div class="label">Delete this note?</div>
-      <div style="flex:1"></div>
-      <div class="actions">
-        <button id="cancelDelete">Cancel</button>
-        <button id="confirmDelete" class="primary">Delete</button>
-      </div>
-    </div>
-  `;
-  setSlideBarContent(html);
-  showSlideBar();
-  document.getElementById('cancelDelete').onclick = ()=> hideSlideBar();
-  document.getElementById('confirmDelete').onclick = ()=>{
-    hideSlideBar();
-    moveToTrash(noteIndex);
-  };
-}
-
-/* Generate Text panel */
 function showGeneratePanel(){
   const html = `
     <div style="display:flex;align-items:center;gap:12px;width:100%;">
@@ -627,11 +691,14 @@ function showGeneratePanel(){
         <div style="font-weight:700;">Generate Text</div>
         <div style="display:flex;gap:8px;">
           <input id="genTopic" type="text" placeholder="Topic (e.g., The Industrial Revolution)" />
-          <select id="genLength">
-            <option value="short">Short</option>
-            <option value="medium">Medium</option>
-            <option value="long">Long</option>
-          </select>
+          <div class="custom-select" style="min-width:120px;">
+            <div class="select-btn" tabindex="0"><span id="genLenLabel">Short</span><span>▾</span></div>
+            <div class="options">
+              <div class="option" data-value="short">Short</div>
+              <div class="option" data-value="medium">Medium</div>
+              <div class="option" data-value="long">Long</div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="actions">
@@ -642,27 +709,44 @@ function showGeneratePanel(){
   `;
   setSlideBarContent(html);
   showSlideBar();
-  setTimeout(()=> document.getElementById('genTopic').focus(), 50);
+  setTimeout(()=> {
+    const topicEl = document.getElementById('genTopic');
+    if(topicEl) topicEl.focus();
+    const cs = slideBar.querySelector('.custom-select');
+    if(cs){
+      const btn = cs.querySelector('.select-btn');
+      const opts = cs.querySelector('.options');
+      btn.onclick = ()=> cs.classList.toggle('open');
+      opts.querySelectorAll('.option').forEach(o=>{
+        o.onclick = ()=>{
+          cs.querySelector('#genLenLabel').textContent = o.textContent;
+          cs.classList.remove('open');
+          cs.dataset.value = o.dataset.value;
+        };
+      });
+      document.addEventListener('click', (e)=>{ if(!cs.contains(e.target)) cs.classList.remove('open'); }, {once:true});
+    }
+  }, 50);
+
   document.getElementById('cancelGen').onclick = ()=> hideSlideBar();
   document.getElementById('confirmGen').onclick = ()=>{
     const topic = document.getElementById('genTopic').value.trim();
-    const length = document.getElementById('genLength').value;
+    const cs = slideBar.querySelector('.custom-select');
+    const length = cs && cs.dataset.value ? cs.dataset.value : 'short';
     if(!topic){ showToast('Please enter a topic'); document.getElementById('genTopic').focus(); return; }
     hideSlideBar();
     generateEssay(topic, length);
   };
 }
 
-/* -------------------------
-   Essay generator (deep, balanced, inline citations, new note)
-   ------------------------- */
 function generateEssay(topic, length){
   const cite = ()=> `(${randSource()})`;
-  const intro = `The topic of ${topic} is central to understanding how modern societies, institutions, and systems operate in practice ${cite()}. It has developed through historical events, technological change, and evolving social priorities, making it a key area of study for educators, researchers, and policymakers ${cite()}.`;
-  const background = `Historically, ${topic} has been shaped by structural forces and individual decisions, including economic pressures, cultural values, and political frameworks ${cite()}. Examining this background helps explain why certain patterns emerged and how different regions responded ${cite()}.`;
-  const mechanisms = `At a practical level, ${topic} influences decision-making, resource allocation, and long-term planning across multiple sectors ${cite()}. Understanding its mechanisms reveals how short-term choices accumulate into lasting outcomes and highlights where interventions can be most effective ${cite()}.`;
-  const impacts = `The impacts of ${topic} are visible in social outcomes, economic indicators, and institutional behavior ${cite()}. By assessing both benefits and risks, stakeholders can design policies and practices that reduce harm while amplifying positive effects ${cite()}.`;
-  const conclusion = `In sum, a deeper, evidence-based understanding of ${topic} supports more informed perspectives and better decisions ${cite()}. Engaging with the subject critically enables individuals and institutions to anticipate change and contribute to sustainable, long-term outcomes ${cite()}.`;
+  const safeTopic = escapeHtml(topic);
+  const intro = `An overview of ${safeTopic} ${cite()}: ${safeTopic} is a subject that connects historical development, practical application, and contemporary relevance.`;
+  const background = `${safeTopic} has evolved through key events, changing social priorities, and technological advances ${cite()}. Understanding this background clarifies why it matters today.`;
+  const mechanisms = `Core mechanisms within ${safeTopic} include structural drivers, stakeholder incentives, and feedback loops that shape outcomes ${cite()}.`;
+  const impacts = `The impacts of ${safeTopic} appear in measurable results, policy decisions, and everyday practice ${cite()}.`;
+  const conclusion = `In conclusion, focused study of ${safeTopic} supports better decisions, clearer communication, and more sustainable long-term outcomes ${cite()}.`;
 
   let paragraphs = [];
   if(length === 'short'){
@@ -673,33 +757,48 @@ function generateEssay(topic, length){
     paragraphs = [intro, background, mechanisms + ' ' + impacts + ' ' + conclusion];
   }
 
-  const html = paragraphs.map(p => `<p>${escapeHtml(p)}</p>`).join('');
+  const html = paragraphs.map(p => `<p>${p}</p>`).join('');
   notes.push({ title: `Essay on ${topic}`, content: html, updated: now(), pinned:false, color:'#2563eb', tags:[] });
   active = notes.length - 1;
   save(); render(document.getElementById('search').value); openNote(active);
-  showToast('Essay generated');
+  showToast('Essay generated about "' + topic + '"');
 }
 
-/* -------------------------
-   Theme handling
-   ------------------------- */
-function setTheme(t){
+function setThemeClass(t){
   if(t === 'light' || t === '') document.body.className = '';
   else document.body.className = t;
   slideBar.style.background = getComputedStyle(document.body).getPropertyValue('--panel');
   slideBar.style.color = getComputedStyle(document.body).getPropertyValue('--text');
+  editor.style.color = getComputedStyle(document.body).getPropertyValue('--text');
 }
 
-/* -------------------------
-   Helpers
-   ------------------------- */
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; });
 }
 
-/* -------------------------
-   Wire up UI
-   ------------------------- */
+function wireCustomSelect(id, onSelect){
+  const root = document.getElementById(id);
+  if(!root) return;
+  const btn = root.querySelector('.select-btn');
+  const opts = root.querySelectorAll('.option');
+  btn.addEventListener('click', ()=> root.classList.toggle('open'));
+  btn.addEventListener('keydown', (e)=> { if(e.key==='Enter' || e.key===' ') { e.preventDefault(); root.classList.toggle('open'); } });
+  opts.forEach(o=>{
+    o.addEventListener('click', ()=>{
+      const v = o.dataset.value;
+      const text = o.textContent;
+      root.querySelector('span').textContent = text;
+      root.classList.remove('open');
+      if(typeof onSelect === 'function') onSelect(v, text);
+    });
+  });
+  document.addEventListener('click', (e)=>{ if(!root.contains(e.target)) root.classList.remove('open'); });
+}
+
+wireCustomSelect('selFontSize', (v)=> applyFontSize(v));
+wireCustomSelect('selFontName', (v)=> applyFontName(v));
+wireCustomSelect('selTheme', (v, text)=> { setThemeClass(v); document.getElementById('selThemeLabel').textContent = text; });
+
 document.getElementById('btnNew').addEventListener('click', createNote);
 document.getElementById('btnImport').addEventListener('click', importFile);
 document.getElementById('btnExport').addEventListener('click', exportNote);
@@ -708,10 +807,8 @@ document.getElementById('btnCloudImport').addEventListener('click', importCloud)
 document.getElementById('btnFocus').addEventListener('click', ()=> document.body.classList.toggle('focused'));
 document.getElementById('search').addEventListener('input', (e)=> render(e.target.value));
 document.getElementById('btnGenerate').addEventListener('click', showGeneratePanel);
-document.getElementById('themeSelect').addEventListener('change', (e)=> setTheme(e.target.value));
 document.getElementById('btnTrashView').addEventListener('click', showTrashView);
 
-/* keyboard shortcuts */
 document.addEventListener('keydown', (e)=>{
   if(e.ctrlKey && e.key === 'n'){ e.preventDefault(); createNote(); }
   if(e.ctrlKey && e.key === 'e'){ e.preventDefault(); exportNote(); }
@@ -719,13 +816,21 @@ document.addEventListener('keydown', (e)=>{
   if(e.ctrlKey && e.key === 'Delete'){ e.preventDefault(); if(active!==null) moveToTrash(active); }
 });
 
-/* boot */
+/* Drawer behavior */
+const drawerOverlay = document.getElementById('drawerOverlay');
+const btnMenu = document.getElementById('btnMenu');
+btnMenu.addEventListener('click', ()=>{
+  document.body.classList.toggle('drawer-open');
+});
+drawerOverlay.addEventListener('click', ()=>{
+  document.body.classList.remove('drawer-open');
+});
+
 function boot(){
   load();
   render();
   if(notes.length) openNote(0);
-  if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) setTheme('dark');
-  // ensure editor color matches theme
+  if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) setThemeClass('dark');
   editor.style.color = getComputedStyle(document.body).getPropertyValue('--text');
   slideBar.style.background = getComputedStyle(document.body).getPropertyValue('--panel');
 }
